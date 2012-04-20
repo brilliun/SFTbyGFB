@@ -64,13 +64,13 @@ public class FilterBankModel implements IFilterBankModel{
 //	}
 	
 
-	@Override
+	
 	public void setController(IMyController controller) {
 		
 		this.controller = controller;
 	}
 
-	@Override
+	
 	public void init() {
 		// TODO Auto-generated method stub
 		
@@ -98,7 +98,7 @@ public class FilterBankModel implements IFilterBankModel{
 	
 	
 
-	@Override
+	
 	public int doFiltering(BufferedImage srcImg, Coordinate2D coord) {
 		// TODO Auto-generated method stub
 		if(srcImg == null){

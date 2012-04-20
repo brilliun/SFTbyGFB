@@ -295,35 +295,35 @@ public class GaborFilter implements IFilter{
 	}
 
 
-	@Override
+	
 	public BufferedImage filterEntireImage(BufferedImage srcImg, int edgeAction) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 
-	@Override
+	
 	public int getKernelWidth() {
 		// TODO Auto-generated method stub
 		return kernel.getWidth();
 	}
 
 
-	@Override
+	
 	public int getKernelHeight() {
 		// TODO Auto-generated method stub
 		return kernel.getHeight();
 	}
 
 
-	@Override
+	
 	public void setTag(String tag) {
 		// TODO Auto-generated method stub
 		
 	}
 
 
-	@Override
+
 	public String getTag() {
 		// TODO Auto-generated method stub
 		return null;

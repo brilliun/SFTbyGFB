@@ -98,14 +98,12 @@ public class MainView implements IMyView {
 	
 	
 
-	@Override
 	public void setController(IMyController controller) {
 
 		this.controller = controller;
 
 	}
 
-	@Override
 	public void start() {
 		
 		frame.setVisible(true);
@@ -113,7 +111,7 @@ public class MainView implements IMyView {
 
 
 
-	@Override
+	
 	public void shapeEstimate(Coordinate2D coordA, Coordinate2D coordB) {
 		
 		controller.triggerShapeEstimation(coordA, coordB);

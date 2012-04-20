@@ -104,7 +104,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 
 	
 
-	@Override
+	
 	public void mousePressed(MouseEvent e) {
 		this.requestFocus();
 		
@@ -140,7 +140,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 	}
 	
 	
-	@Override
+	
 	public void keyPressed(KeyEvent e) {
 		
 		if(!leftPicked && !rightPicked && !centerPicked)
@@ -660,31 +660,31 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 	}
 	
 
-	@Override
+	
 	public void keyReleased(KeyEvent arg0) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
+	
 	public void keyTyped(KeyEvent arg0) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
+	
 	public void mouseClicked(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
+	
 	public void mouseEntered(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
+	
 	public void mouseExited(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		
@@ -692,7 +692,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 
 	
 
-	@Override
+	
 	public void mouseReleased(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		

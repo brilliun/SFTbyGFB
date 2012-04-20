@@ -33,7 +33,7 @@ public class MainController implements IMyController {
 	
 	
 
-	@Override
+	
 	public void triggerShapeEstimation(Coordinate2D coordA, Coordinate2D coordB) {
 		
 		
@@ -56,14 +56,14 @@ public class MainController implements IMyController {
 		
 	}
 	
-	@Override
+	
 	public void setView(IMyView view) {
 		
 		this.mainView = view;
 		
 	}
 
-	@Override
+	
 	public void setModel(IFilterBankModel model) {
 		
 		this.filterBankModel = model;
@@ -75,7 +75,7 @@ public class MainController implements IMyController {
 	}
 
 
-	@Override
+	
 	public void init() {
 	
 		initModel();
@@ -89,7 +89,7 @@ public class MainController implements IMyController {
 	
 	private void initModel(){
 		
-		filterImage = new SrcImage("final/11_s25t160.bmp");
+		filterImage = new SrcImage("test/11_s25t160.bmp");
 		
 		
 		filterBankModel.init();
@@ -104,7 +104,7 @@ public class MainController implements IMyController {
 		mainView.init();
 	}
 	
-	@Override
+	
 	public void start() {
 		mainView.start();
 		
@@ -112,32 +112,32 @@ public class MainController implements IMyController {
 	
 	
 	
-	@Override
+	
 	public void updateView() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
+	
 	public void updateModel() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
+	
 	public BufferedImage getSrcImage() {
 		// TODO Auto-generated method stub
 		
 		return filterImage.getSrcImg();
 	}
 
-	@Override
+	
 	public int getPatchWidth() {
 		// TODO Auto-generated method stub
 		return filterBankModel.getPatchWidth();
 	}
 
-	@Override
+	
 	public int getPatchHeight() {
 		// TODO Auto-generated method stub
 		return filterBankModel.getPatchHeight();

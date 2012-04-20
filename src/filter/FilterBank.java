@@ -34,7 +34,7 @@ public class FilterBank implements IFilter{
 	}
 	
 
-	@Override
+	
 	public void buildKernel(int width, int height) {
 		
 		Iterator<IFilter> iter = filterBank.iterator();
@@ -45,7 +45,7 @@ public class FilterBank implements IFilter{
 		
 	}
 
-	@Override
+	
 	public double patchConvolve(BufferedImage srcImg, int posX, int posY,	int width, int height, int edgeAction) {
 		
 		double totalResponse = 0;
@@ -84,37 +84,37 @@ public class FilterBank implements IFilter{
 		
 	}
 
-	@Override
+	
 	public BufferedImage filterEntireImage(BufferedImage srcImg, int edgeAction) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
+	
 	public int getKernelWidth() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
+	
 	public int getKernelHeight() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
+	
 	public void setTag(String tag) {
 		this.tag = tag;
 		
 	}
 
-	@Override
+	
 	public String getTag() {
 		// TODO Auto-generated method stub
 		return tag;
 	}
 
-	@Override
+	
 	public double pointConvolve(BufferedImage srcImg, int posX, int posY,
 			int edgeAction) {
 		// TODO Auto-generated method stub

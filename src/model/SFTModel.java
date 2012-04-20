@@ -28,7 +28,7 @@ public class SFTModel implements ISFTModel{
 	}
 	
 	
-	@Override
+	
 	public void setController(IMyController controller) {
 
 		this.controller = controller;
@@ -36,7 +36,7 @@ public class SFTModel implements ISFTModel{
 	}
 	
 
-	@Override
+	
 	public void init() {
 		
 		this.shapeEstimation = new ShapeEstimation(viewAngleD, dimension);
