@@ -179,6 +179,82 @@ public class GaborFilter implements IFilter{
 	
 	
 	
+	public double dotProduct(BufferedImage inputImg, int posX, int posY, int edgeAction){
+		
+		if(this.kernel == null){
+			System.out.println("No Kernel");
+			return 0;
+		}
+		
+		
+
+		double responseRe = 0;
+		double responseIm = 0;
+		
+		
+		int kernelWidth = kernel.getWidth();
+		
+		int kernelHeight = kernel.getHeight();
+		
+		
+		Raster inputRaster = inputImg.getData();
+		
+		int band = inputRaster.getNumBands();
+		
+//		System.out.println("band=" + band);
+		
+		//response = new double[band];
+		
+		
+		
+		int kernelIdxCol, kernelIdxRow;
+		
+		double[] pixel = new double[band];
+		
+		double kernelCoefficientRe, kernelCoefficientIm;
+		
+		for(kernelIdxRow = 0; kernelIdxRow < kernelHeight; kernelIdxRow++){
+			
+			for(kernelIdxCol = 0; kernelIdxCol < kernelWidth; kernelIdxCol++){
+				
+				kernelCoefficientRe = kernel.getComplexCoefficient(kernelIdxCol, kernelIdxRow).getRe();
+				kernelCoefficientIm = kernel.getComplexCoefficient(kernelIdxCol, kernelIdxRow).getIm();
+				
+						
+				int pixelOffsetX = posX + (kernelIdxCol - kernel.getXOrigin());
+				
+				int pixelOffsetY = posY + (kernelIdxRow - kernel.getYOrigin());
+				
+				
+				for(int b = 0; b < band; b++){
+					
+					pixel[b] = inputRaster.getSampleDouble(pixelOffsetX, pixelOffsetY, b);
+					
+				}
+				
+
+				if(band == 1){
+					responseRe += (pixel[0] * kernelCoefficientRe);
+					responseIm += (pixel[0] * kernelCoefficientIm);
+				}
+				else{
+					double pixelVal = ImgCommonUtil.convertRGBtoGrayscale(pixel[0], pixel[1], pixel[2]);
+					responseRe += (pixelVal * kernelCoefficientRe);
+					responseIm += (pixelVal * kernelCoefficientIm);
+				}
+				
+			}
+			
+			
+		}
+		double response = Math.sqrt(responseRe * responseRe + responseIm * responseIm);
+		
+		
+		return response;
+		
+		
+		
+	}
 	
 	
 	
