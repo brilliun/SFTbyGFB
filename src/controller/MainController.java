@@ -42,6 +42,14 @@ public class MainController implements IMyController {
 		appendNormalNeedle(anglesEstimated[0], anglesEstimated[1]);
 	}
 	
+	public void triggerShapeEstimationEnergy(Coordinate2D coordA, Coordinate2D coordB) {
+		
+		
+		double[] anglesEstimated = sftModel.doShapeEstimationEnergy(filterBankModel, filterImage.getSrcImg(), coordA, coordB);
+		
+		appendNormalNeedle(anglesEstimated[0], anglesEstimated[1]);
+	}
+	
 	
 	public void triggerSlantTiltMap(Coordinate2D startCoord, int rangeX, int rangeY){
 		

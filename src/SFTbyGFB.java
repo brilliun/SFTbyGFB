@@ -12,7 +12,7 @@ public class SFTbyGFB {
 
 		FilterBankModel filterBankModel = new FilterBankModel();
 		
-		SFTModel sftModel = new SFTModel(40.0, 1024);
+		SFTModel sftModel = new SFTModel(40.0, 512);
 
 		MainView mainView = new MainView();
 

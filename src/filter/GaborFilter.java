@@ -154,6 +154,31 @@ public class GaborFilter implements IFilter{
 		
 	}
 	
+	public double patchConvolveEnergy(BufferedImage inputImg, int startX, int startY, int width, int height, int edgeAction){
+		
+		
+		double response = 0.0;
+		
+		int endX = startX + width;
+		int endY = startY + height;
+		
+		for(int x = startX; x < endX; x++){
+			for(int y = startY; y < endY; y++){
+				
+				double responseAmp = pointConvolve(inputImg, x, y, edgeAction); 
+				
+				response += responseAmp * responseAmp;// * gaussianFunction(x - 16.5, y - 16.5);
+				
+				
+			}
+		}
+		
+		return response;
+		
+	}
+	
+	
+	
 	
 	
 	

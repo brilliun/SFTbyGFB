@@ -78,6 +78,8 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 	
 	private LinkedList<double[]> angles;
 	
+	private LinkedList<double[]> angleBuf;
+	
 	private LinkedList<int[]> positions;
 	
 	private LinkedList<Color> needleColor;
@@ -277,6 +279,36 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 			
 			
 		}
+		else if(e.getKeyChar() == 's'){
+			
+			System.out.println("Box -- Diagonal & Cross");
+			
+			if(centerPicked){
+				
+				
+				estimateSingle(centerCoord.getX(), centerCoord.getY());
+				
+				this.repaint();
+			}
+			
+		}
+		
+		else if(e.getKeyChar() == 'e'){
+			
+			System.out.println("Energy -- Diagonal & Cross");
+			
+			if(centerPicked){
+				
+				
+				estimateSingleEnergy(centerCoord.getX(), centerCoord.getY());
+				
+				this.repaint();
+			}
+			
+			
+			
+		}
+		
 		else if(e.getKeyChar() == 'z'){
 			
 			System.out.println("Zhankai");
@@ -294,21 +326,21 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 			
 		}
 		
-		else if(e.getKeyChar() == '1'){
-			needleColor.add(Color.RED);
-			attatchNormalNeedle(62, 349);
-			
-		}
-		else if(e.getKeyChar() == '2'){
-			needleColor.add(Color.RED);
-			attatchNormalNeedle(70, 90);
-			
-		}
-		else if(e.getKeyChar() == '3'){
-			needleColor.add(Color.RED);
-			attatchNormalNeedle(35.5, 210.6);
-			
-		}
+//		else if(e.getKeyChar() == '1'){
+//			needleColor.add(Color.RED);
+//			attatchNormalNeedle(62, 349);
+//			
+//		}
+//		else if(e.getKeyChar() == '2'){
+//			needleColor.add(Color.RED);
+//			attatchNormalNeedle(70, 90);
+//			
+//		}
+//		else if(e.getKeyChar() == '3'){
+//			needleColor.add(Color.RED);
+//			attatchNormalNeedle(35.5, 210.6);
+//			
+//		}
 		else if(e.getKeyChar() == 'p'){
 //			System.out.println("preprocessing");
 			
@@ -435,17 +467,109 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 		double slantAll = 0;
 		double tiltAll = 0;
 		
-		for(int i = 0; i < angles.size(); i++){
+		for(int i = 0; i < angleBuf.size(); i++){
 			
-			double[] angle = angles.get(i);
+			double[] angle = angleBuf.get(i);
 			
 			slantAll += angle[0];
 			tiltAll += angle[1];
 			
 		}
-		double[] avgAngle = {slantAll/angles.size(), tiltAll/angles.size()};
+		double[] avgAngle = {slantAll/angleBuf.size(), tiltAll/angleBuf.size()};
 		
-		angles.clear();
+		System.out.println("Single Avg: slant = " + avgAngle[0] + ", tilt = " + avgAngle[1]);
+		
+
+		
+		angleBuf.clear();
+		
+		angles.add(avgAngle);
+		
+		int[] position = {centerCoord.getX(), centerCoord.getY()};
+		
+		positions.add(position);
+		
+		needleColor.add(Color.GREEN);
+		
+		return avgAngle;
+	}
+	
+
+	private double[] estimateSingleEnergy(int centerX, int centerY){
+		
+
+		//Diagonal
+		int topLeftX = centerX - patchWidth/2;
+		int topLeftY = centerY - patchHeight/2;
+		
+		int bottomRightX = centerX + patchWidth/2;
+		int bottomRightY = centerY + patchHeight/2;
+				
+
+//		needleColor.add(Color.GREEN);
+		
+		mainView.shapeEstimateEnergy(new Coordinate2D(topLeftX, topLeftY, srcImg.getWidth()), new Coordinate2D(bottomRightX, bottomRightY, srcImg.getWidth()));
+		
+		
+		int topRightX = centerX + patchWidth/2;
+		int topRightY = centerY + patchHeight/2;
+		
+		int bottomLeftX = centerX - patchWidth/2;
+		int bottomLeftY = centerY - patchHeight/2;
+				
+//		needleColor.add(Color.GREEN);
+		
+		mainView.shapeEstimateEnergy(new Coordinate2D(topRightX, topRightY, srcImg.getWidth()), new Coordinate2D(bottomLeftX, bottomLeftY, srcImg.getWidth()));
+		
+		
+		
+		//Cross
+		int leftX = centerX - patchWidth/2;
+		int leftY = centerY;
+		
+		int rightX = centerX + patchWidth/2;
+		int rightY = centerY;
+				
+
+//		needleColor.add(Color.GREEN);
+		
+		mainView.shapeEstimateEnergy(new Coordinate2D(leftX, leftY, srcImg.getWidth()), new Coordinate2D(rightX, rightY, srcImg.getWidth()));
+		
+		
+		int topX = centerX;
+		int topY = centerY + patchHeight/2;
+		
+		int bottomX = centerX;
+		int bottomY = centerY - patchHeight/2;
+				
+//		needleColor.add(Color.GREEN);
+		
+		mainView.shapeEstimateEnergy(new Coordinate2D(topX, topY, srcImg.getWidth()), new Coordinate2D(bottomX, bottomY, srcImg.getWidth()));
+		
+		double slantAll = 0;
+		double tiltAll = 0;
+		
+		for(int i = 0; i < angleBuf.size(); i++){
+			
+			double[] angle = angleBuf.get(i);
+			
+			slantAll += angle[0];
+			tiltAll += angle[1];
+			
+		}
+		double[] avgAngle = {slantAll/angleBuf.size(), tiltAll/angleBuf.size()};
+		
+		System.out.println("Energy Avg: slant = " + avgAngle[0] + ", tilt = " + avgAngle[1]);
+		
+		angleBuf.clear();
+		
+		angles.add(avgAngle);
+		
+		int[] position = {centerCoord.getX(), centerCoord.getY()};
+		
+		positions.add(position);
+		
+		needleColor.add(Color.YELLOW);
 		
 		return avgAngle;
 	}
@@ -455,13 +579,13 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 		
 		double[] estimatedAngles = {slant, tilt}; 
 		
-		angles.add(estimatedAngles);
+		angleBuf.add(estimatedAngles);
 		
-		int[] position = {centerCoord.getX(), centerCoord.getY()};
+//		int[] position = {centerCoord.getX(), centerCoord.getY()};
+//		
+//		positions.add(position);
 		
-		positions.add(position);
-		
-		this.repaint();
+//		this.repaint();
 	}
 	
 	
@@ -541,13 +665,15 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 			
 			int y2 = (int) Math.round(y1 - NEEDLE_LENGTH * Math.sin(slant) * Math.sin(tilt));
 			
-			g.setColor(Color.GREEN);
+			g.setColor(needleColor.get(i));
 			
 			g.drawLine(x1, y1, x2, y2);
 			
 			g.setColor(Color.RED);
 			
 			g.drawLine(x1, y1, x1, y1);
+			
+			
 			
 		}
 		System.out.println("Center" + centerCoord.toString());
@@ -641,6 +767,8 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 		centerCoord = new Coordinate2D();
 		
 		angles = new LinkedList<double[]>();
+		
+		angleBuf = new LinkedList<double[]>();
 		
 		positions = new LinkedList<int[]>();
 		

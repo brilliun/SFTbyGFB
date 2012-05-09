@@ -12,5 +12,7 @@ public interface ISFTModel {
 	public void init();
 	
 	public double[] doShapeEstimation(IFilterBankModel filterBankModel, BufferedImage srcImg, Coordinate2D coordA, Coordinate2D coordB);
+	
+	public double[] doShapeEstimationEnergy(IFilterBankModel filterBankModel, BufferedImage srcImg, Coordinate2D coordA, Coordinate2D coordB);
 
 }

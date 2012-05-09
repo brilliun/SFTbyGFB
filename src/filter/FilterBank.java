@@ -27,6 +27,7 @@ public class FilterBank implements IFilter{
 	
 	public void addFilter(IFilter filter){
 		filterBank.add(filter);
+		
 	}
 	
 	public int getFilterBankSize(){
@@ -60,6 +61,18 @@ public class FilterBank implements IFilter{
 		
 		return totalResponse;
 	}
+	public double patchConvolveEnergy(BufferedImage srcImg, int posX, int posY, int width, int height, int edgeAction) {
+		// TODO Auto-generated method stub
+		double totalResponse = 0;
+		
+		Iterator<IFilter> iter = filterBank.iterator();
+		
+		while(iter.hasNext()){
+			totalResponse += iter.next().patchConvolveEnergy(srcImg, posX, posY, width, height, edgeAction);
+		}
+		
+		return totalResponse;
+	}
 	
 	public LinkedHashMap<IFilter, Double> patchConvolveResultMap(BufferedImage srcImg, int posX, int posY, int patchWidth, int patchHeight, int edgeAction){
 		
@@ -74,6 +87,29 @@ public class FilterBank implements IFilter{
 			IFilter filter = iter.next();
 			
 			response = filter.patchConvolve(srcImg, posX, posY, patchWidth, patchHeight, edgeAction);
+			
+			resultMap.put(filter, new Double(response));
+			
+		}
+		
+		return resultMap;
+		
+		
+	}
+	
+	public LinkedHashMap<IFilter, Double> patchConvolveResultMapEnergy(BufferedImage srcImg, int posX, int posY, int patchWidth, int patchHeight, int edgeAction){
+		
+		
+		LinkedHashMap<IFilter, Double> resultMap = new LinkedHashMap<IFilter, Double>();
+		
+		Iterator<IFilter> iter = filterBank.iterator();
+		double response = 0;
+		
+		while(iter.hasNext()){
+			
+			IFilter filter = iter.next();
+			
+			response = filter.patchConvolveEnergy(srcImg, posX, posY, patchWidth, patchHeight, edgeAction);
 			
 			resultMap.put(filter, new Double(response));
 			
@@ -120,5 +156,7 @@ public class FilterBank implements IFilter{
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	
 
 }

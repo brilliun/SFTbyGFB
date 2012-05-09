@@ -22,9 +22,13 @@ public interface IFilterBankModel {
 	
 	public int doFilteringConcurrent(BufferedImage srcImg, Coordinate2D coord);
 	
+	public int doFilteringConcurrentEnergy(BufferedImage srcImg, Coordinate2D coord);
+	
 	public void printCurrentResult();
 	
 	public double[] getCurrentResult();
 	
 	public double[] getCurrentResultConcurrent();
+	
+	public double[] getCurrentResultConcurrentEnergy();
 }

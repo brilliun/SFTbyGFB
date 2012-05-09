@@ -118,6 +118,12 @@ public class MainView implements IMyView {
 		
 	}
 	
+	public void shapeEstimateEnergy(Coordinate2D coordA, Coordinate2D coordB) {
+		
+		controller.triggerShapeEstimationEnergy(coordA, coordB);
+		
+	}
+	
 	public void addNormalNeedle(double slant, double tilt){
 		srcImgPanel.attatchNormalNeedle(slant, tilt);
 	}

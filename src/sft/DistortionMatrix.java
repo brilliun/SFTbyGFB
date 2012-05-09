@@ -81,7 +81,7 @@ public class DistortionMatrix {
 		
 		double focal = -dimension / (2.0 * tan(halfAngle));
 		
-		focal = -1836;
+//		focal = -1836;
 		return focal;
 		
 	}

@@ -19,6 +19,8 @@ public interface IMyView {
 	
 	public void shapeEstimate(Coordinate2D coordA, Coordinate2D coordB);
 	
+	public void shapeEstimateEnergy(Coordinate2D coordA, Coordinate2D coordB);
+	
 	public void addNormalNeedle(double slant, double tilt);
 
 }

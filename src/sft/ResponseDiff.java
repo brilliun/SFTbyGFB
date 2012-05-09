@@ -47,6 +47,47 @@ public class ResponseDiff {
 		
 	}
 	
+	public static double computeResponseDiffEnergy(DistortionMatrix phi, double[] responseA, double[] responseB){
+		
+		if(responseA == null || responseB == null || responseA.length != responseB.length)
+			throw new IllegalArgumentException();
+		
+		
+		int orientations = responseA.length; 
+		
+		
+		double dTheta = PI / orientations;
+		
+		double totalDiff = 0.0;
+		
+//		double[] responseB_recovered = new double[orientations];
+		
+		for(int n = 0; n < orientations; n++){
+			
+			double thetaB = n * dTheta;
+			
+			double thetaA = thetaRotated(phi, thetaB);
+			
+			double lambda = lambdaScaling(phi, thetaB);
+			
+			if(thetaA < 0)
+				thetaA += PI;
+			
+			
+			double responseInter = linearInterpolation(thetaA, orientations, responseA);
+			
+			
+			double responseB_recovered = pow(phi.determinate(), 2) / pow(lambda, 2) * responseInter;
+			
+			
+			totalDiff += abs(responseB_recovered - responseB[n]) / responseB[n];
+		}
+		
+		return totalDiff;
+		
+		
+	}
+	
 	
 	private static double linearInterpolation(double thetaA, int orientations, double[] responses){
 		

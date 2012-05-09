@@ -65,6 +65,26 @@ public class SFTModel implements ISFTModel{
 		return anglesEstimated;
 	}
 	
+	public double[] doShapeEstimationEnergy(IFilterBankModel filterBankModel, BufferedImage srcImg, Coordinate2D pointA, Coordinate2D pointB){
+		
+		filterBankModel.doFilteringConcurrentEnergy(srcImg, pointA);
+		
+		double[] responseA = filterBankModel.getCurrentResultConcurrentEnergy();
+		
+		filterBankModel.doFilteringConcurrentEnergy(srcImg, pointB);
+		
+		double[] responseB = filterBankModel.getCurrentResultConcurrentEnergy();
+		
+		
+		double[] anglesEstimated = shapeEstimation.estimateShapeEnergy(responseA, responseB, pointA.centerCoord(), pointB.centerCoord());  
+		
+		System.out.println("slant = " + anglesEstimated[0]);
+		
+		System.out.println("tilt = " + anglesEstimated[1]);
+		
+		return anglesEstimated;
+	}
+	
 	
 	public void doSlantTiltMapGeneration(IFilterBankModel filterBankModel, Coordinate2D startCoord, int rangeX, int rangeY){
 		

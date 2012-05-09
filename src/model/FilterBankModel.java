@@ -13,6 +13,7 @@ import mathUtil.Coordinate2D;
 import controller.IMyController;
 import filter.FilterBank;
 import filter.FilterBankCallable;
+import filter.FilterBankCallableEnergy;
 import filter.GaborFilter;
 import filter.IFilter;
 
@@ -30,7 +31,11 @@ public class FilterBankModel implements IFilterBankModel{
 	
 	private LinkedList<FutureTask> filterBankTasks = new LinkedList<FutureTask>();
 	
+	private LinkedList<FutureTask> filterBankEnergyTasks = new LinkedList<FutureTask>();
+	
 	private LinkedList<FilterBankCallable> filterBankCallableList = new LinkedList<FilterBankCallable>();
+	
+	private LinkedList<FilterBankCallableEnergy> filterBankCallableEnergyList = new LinkedList<FilterBankCallableEnergy>();
 	
 	private int patchWidth;
 	
@@ -46,6 +51,8 @@ public class FilterBankModel implements IFilterBankModel{
 	private IMyController controller;
 	
 	private FilterBank entireFilterBank;
+	
+	private FilterBank entireFilterBankEnergy;
 	
 	private LinkedHashMap<IFilter, Double> resultMap;
 	
@@ -84,6 +91,7 @@ public class FilterBankModel implements IFilterBankModel{
 		
 		prepareGaborFilterBankConcurrent();
 		
+		prepareGaborFilterBankConcurrentEnergy();
 	}
 	
 	
@@ -143,14 +151,37 @@ public class FilterBankModel implements IFilterBankModel{
 		
 		
 		
+		return FILTERING_SUCCESS;
 		
+	}
+	
+	public int doFilteringConcurrentEnergy(BufferedImage srcImg, Coordinate2D coord){
+		
+		if(srcImg == null){
+			return NO_SRCIMG;
+		}
+		
+		filterBankEnergyTasks.clear();
+		
+		for(int i = 0; i < filterBankCallableEnergyList.size(); i++){
+			
+			FilterBankCallableEnergy filterBankCallableEnergy = filterBankCallableEnergyList.get(i);
+			filterBankCallableEnergy.setFilteringParams(srcImg, coord.getX(), coord.getY(), patchWidth, patchHeight, 0);
+			
+			FutureTask<LinkedHashMap> futureTask = new FutureTask<LinkedHashMap>(filterBankCallableEnergy);
+			filterBankEnergyTasks.add(futureTask);
+
+			Thread t = new Thread(futureTask);
+			
+			t.start();
+			
+		}
 		
 		
 		
 		return FILTERING_SUCCESS;
 		
 	}
-	
 	
 	public double[] getCurrentResult(){
 		
@@ -220,6 +251,49 @@ public class FilterBankModel implements IFilterBankModel{
 		
 	}
 	
+	public double[] getCurrentResultConcurrentEnergy(){
+		
+		double[] results = new double[ORIENTATIONS];
+		
+		
+		int idx = 0;
+		
+		Iterator<FutureTask> taskIter = filterBankEnergyTasks.iterator();
+		
+		while(taskIter.hasNext()){
+			
+			FutureTask<LinkedHashMap> filterBankTask = taskIter.next();
+			
+			
+			try {
+				LinkedHashMap subresultMap = filterBankTask.get();
+				
+				Iterator<Entry<IFilter, Double>> resultIter = subresultMap.entrySet().iterator();
+				
+				while(resultIter.hasNext()){
+					
+					Entry<IFilter, Double> resultEntry = resultIter.next();
+					
+					results[idx++] = resultEntry.getValue();
+					
+				}
+				
+				
+				
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		
+		return results;
+		
+	}
+	
 	public void printCurrentResult(){
 		
 		Iterator<Entry<IFilter, Double>> iter = resultMap.entrySet().iterator();
@@ -238,6 +312,91 @@ public class FilterBankModel implements IFilterBankModel{
 		System.out.println(stringBd);
 	}
 	
+	
+	private void prepareGaborFilterBankConcurrent(){
+		
+//		double[] freq = {0.0972, 0.1994, 0.3105, 0.4182};
+//		double[] sigma = {3.9067, 3.4455, 3.1908, 3.3877};
+//		double[] gamma = {0.3496, 0.3777, 0.4334, 0.5501};
+		
+		double[] freq = {0.1336, 0.2301, 0.3280, 0.4237};
+		double[] sigma = {4.3476, 4.1176, 3.7229, 3.9247};
+		double[] gamma = {0.2499, 0.3509, 0.4250, 0.5202};
+		
+		
+		
+		
+		int numOfLevels = 4;
+		
+		entireFilterBank = new FilterBank();
+		
+		
+		int threadIndex;
+		int subOrientNum = ORIENTATIONS / NUM_FILTERBANK_THREADS;
+		
+//		FilterBankCallable[] filterBankCallables = new FilterBankCallable[NUM_FILTERBANK_THREADS];
+		;
+		
+		
+		double theta = 0;
+		
+		double thetaGap = Math.PI / ORIENTATIONS;
+		
+		for(int orient = 0; orient < ORIENTATIONS; orient += subOrientNum){
+			
+			
+			FilterBankCallable filterBankCallable = new FilterBankCallable();
+			
+			
+//			FutureTask<LinkedHashMap> futerTask = new FutureTask<LinkedHashMap>(filterBankCallable);
+			
+			FilterBank subGroupFilterBank = new FilterBank();
+			
+			filterBankCallable.setFilterBank(subGroupFilterBank);
+			
+			
+			filterBankCallableList.add(filterBankCallable);
+			
+//			filterBankTasks.add(futerTask);
+			
+			
+			
+			
+			for(int subOrient = 0; subOrient < subOrientNum; subOrient++){
+				
+				
+				
+				FilterBank sameOrientFilterBank = new FilterBank("#" + (orient+subOrient));
+				
+				for(int level = 0; level < numOfLevels; level++){
+					
+					GaborFilter gaborFilter = new GaborFilter(freq[level], sigma[level], gamma[level], theta);
+					
+					sameOrientFilterBank.addFilter(gaborFilter);
+					
+				}
+				
+				
+				subGroupFilterBank.addFilter(sameOrientFilterBank);
+				
+				
+				
+				entireFilterBank.addFilter(sameOrientFilterBank);
+				
+				theta += thetaGap;
+				
+				
+			}
+			
+			
+			
+		}
+		
+		
+		entireFilterBank.buildKernel(kernelWidth, kernelHeight);
+		
+	}
+
 	private void prepareGaborFilterBank(){
 		
 		double[] freq = {0.0972, 0.1994, 0.3105, 0.4182};
@@ -285,22 +444,23 @@ public class FilterBankModel implements IFilterBankModel{
 		
 	}
 	
-	private void prepareGaborFilterBankConcurrent(){
+	private void prepareGaborFilterBankConcurrentEnergy(){
 		
-//		double[] freq = {0.0972, 0.1994, 0.3105, 0.4182};
-//		double[] sigma = {3.9067, 3.4455, 3.1908, 3.3877};
-//		double[] gamma = {0.3496, 0.3777, 0.4334, 0.5501};
+
 		
-		double[] freq = {0.1336, 0.2301, 0.3280, 0.4237};
-		double[] sigma = {4.3476, 4.1176, 3.7229, 3.9247};
-		double[] gamma = {0.2499, 0.3509, 0.4250, 0.5202};
+//		double[] freq = {0.1278, 0.2141, 0.3184, 0.4227};
+//		double[] sigma = {3.7144, 2.8135, 2.4096, 2.4990};
+//		double[] gamma = {0.1766, 0.2256, 0.2767, 0.3630};
 		
+		double[] freq = {0.1339, 0.2249, 0.3283, 0.4284};
+		double[] sigma = {3.1937, 2.6562, 2., 2.3598};
+		double[] gamma = {0.1711, 0.2293, 0.2790, 0.3720};
 		
 		
 		
 		int numOfLevels = 4;
 		
-		entireFilterBank = new FilterBank();
+		entireFilterBankEnergy = new FilterBank();
 		
 		
 		int threadIndex;
@@ -317,15 +477,18 @@ public class FilterBankModel implements IFilterBankModel{
 		for(int orient = 0; orient < ORIENTATIONS; orient += subOrientNum){
 			
 			
-			FilterBankCallable filterBankCallable = new FilterBankCallable();
+			
+			FilterBankCallableEnergy filterBankCallableEnergy = new FilterBankCallableEnergy();
 			
 //			FutureTask<LinkedHashMap> futerTask = new FutureTask<LinkedHashMap>(filterBankCallable);
 			
 			FilterBank subGroupFilterBank = new FilterBank();
 			
-			filterBankCallable.setFilterBank(subGroupFilterBank);
 			
-			filterBankCallableList.add(filterBankCallable);
+			filterBankCallableEnergy.setFilterBank(subGroupFilterBank);
+			
+			
+			filterBankCallableEnergyList.add(filterBankCallableEnergy);
 			
 //			filterBankTasks.add(futerTask);
 			
@@ -351,7 +514,7 @@ public class FilterBankModel implements IFilterBankModel{
 				
 				
 				
-				entireFilterBank.addFilter(sameOrientFilterBank);
+				entireFilterBankEnergy.addFilter(sameOrientFilterBank);
 				
 				theta += thetaGap;
 				
@@ -363,8 +526,8 @@ public class FilterBankModel implements IFilterBankModel{
 		}
 		
 		
-		entireFilterBank.buildKernel(kernelWidth, kernelHeight);
+		entireFilterBankEnergy.buildKernel(kernelWidth, kernelHeight);
 		
 	}
-	
+
 }

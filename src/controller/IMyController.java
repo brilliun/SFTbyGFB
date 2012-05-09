@@ -39,4 +39,6 @@ public interface IMyController {
 	public void triggerFiltering(Coordinate2D centerCoord);
 	
 	public void triggerShapeEstimation(Coordinate2D coordA, Coordinate2D coordB);
+	
+	public void triggerShapeEstimationEnergy(Coordinate2D coordA, Coordinate2D coordB);
 }
