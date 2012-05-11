@@ -598,7 +598,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 	}
 	
 	
-	
+	/*
 	private void drawGrid(Graphics g){
 		
 		if(gridSelected){
@@ -627,7 +627,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 		}
 		
 	}
-	
+	*/
 	
 	
 
