@@ -1,9 +1,13 @@
 package filter;
 
+import imgUtil.Spectrum;
+
 import java.awt.image.BufferedImage;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.concurrent.Callable;
+
+import mathUtil.Complex;
 
 public class FilterBankCallable implements Callable<LinkedHashMap>{
 	
@@ -15,7 +19,7 @@ public class FilterBankCallable implements Callable<LinkedHashMap>{
 	private int id; 
 	
 	
-	private BufferedImage srcImg;
+	private Spectrum srcImg;
 	
 	private int posX;
 	
@@ -46,7 +50,7 @@ public class FilterBankCallable implements Callable<LinkedHashMap>{
 		this.filterBank = filterBank;
 	}
 	
-	public void setFilteringParams(BufferedImage srcImg, int posX, int posY, int patchWidth, int patchHeight, int edgeAction){
+	public void setFilteringParams(Spectrum srcImg, int posX, int posY, int patchWidth, int patchHeight, int edgeAction){
 		
 		
 		this.srcImg = srcImg;
@@ -63,7 +67,7 @@ public class FilterBankCallable implements Callable<LinkedHashMap>{
 	}
 
 	
-	public LinkedHashMap<IFilter, Double> call() throws Exception {
+	public LinkedHashMap<IFilter, Complex> call() throws Exception {
 		// TODO Auto-generated method stub
 		
 		

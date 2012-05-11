@@ -6,6 +6,8 @@ import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.util.LinkedList;
 
+import mathUtil.Complex;
+
 public class ImgCommonUtil {
 	
 	private static final int GRAY = 1;
@@ -130,17 +132,17 @@ public class ImgCommonUtil {
 	}
 	
 	
-	public static LinkedList<double[][]> FFT2D(BufferedImage img, boolean inverse){
+	public static Spectrum FFT2D(BufferedImage img, boolean inverse){
 		
 		int width = img.getWidth();
 		int height = img.getHeight();
 		
-		return FFT2D(width, height, inverse, readGrayscaleImageData(img), new double[width][height]);
+		return FFT2D(width, height, inverse, new Spectrum(width, height, readGrayscaleImageData(img)));
 		
 	}
 	
 	
-	public static LinkedList<double[][]> FFT2D(int n, int m, boolean inverse, double[][] gRe, double[][] gIm)
+	public static Spectrum FFT2D(int n, int m, boolean inverse, Spectrum inputSpectrum)
 	{ 
 		//System.out.println("FFT!!!");
 		
@@ -159,8 +161,8 @@ public class ImgCommonUtil {
 	  for(int x = 0; x <m; x++) //for each column
 	  for(int y = 0; y < m; y++) //for each row
 	  {
-	    GRe[x][y] = gRe[x][y];
-	    GIm[x][y] = gIm[x][y];
+	    GRe[x][y] = inputSpectrum.getPointData(x, y).getRe();
+	    GIm[x][y] = inputSpectrum.getPointData(x, y).getIm();
 	  } 
 	  
 	  //Bit reversal of each row
@@ -170,8 +172,8 @@ public class ImgCommonUtil {
 	   int j = 0;
 	    for(int i = 0; i < n - 1; i++)
 	    {
-	      GRe[i][y] = gRe[j][y];
-	      GIm[i][y] = gIm[j][y];
+	      GRe[i][y] = inputSpectrum.getPointData(j, y).getRe();
+	      GIm[i][y] = inputSpectrum.getPointData(j, y).getIm();
 	      int k = n / 2;
 	      while (k <= j) {j -= k; k/= 2;}
 	      j += k;
@@ -277,12 +279,7 @@ public class ImgCommonUtil {
 	  }  
 	  
 	  
-	  LinkedList<double[][]> result = new LinkedList<double[][]>();
-	  
-	  result.addFirst(GRe);
-	  result.addLast(GIm);
-	  
-	  return result;
+	  return new Spectrum(n, m, GRe, GIm);
 	}
 	
 	private static int round(int v, int l, int h){

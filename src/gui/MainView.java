@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
 
 import mathUtil.Coordinate2D;
+import model.SrcImage;
 
 
 import controller.IMyController;
@@ -15,19 +16,19 @@ public class MainView implements IMyView {
 	
 	// Layout Constants
 	
-	private static final int FRAME_WIDTH = 1800;
+	public static final int FRAME_WIDTH = 800;
 
-	private static final int FRAME_HEIGHT = 1100;
+	public static final int FRAME_HEIGHT = 800;
 
 	private static Dimension frameSize = new Dimension(FRAME_WIDTH,
 			FRAME_HEIGHT);
 
 	
-	private static final int CHART_LEFT = 100;
-
-	private static final int CHART_WIDTH = 600;
-
-	private static final int CHART_HEIGHT = 600;
+//	private static final int CHART_LEFT = 100;
+//
+//	private static final int CHART_WIDTH = 600;
+//
+//	private static final int CHART_HEIGHT = 600;
 
 	
 	
@@ -62,7 +63,7 @@ public class MainView implements IMyView {
 
 		
 		
-		BufferedImage srcImg = controller.getSrcImage();
+		SrcImage srcImg = controller.getSrcImage();
 		
 		srcImgPanel = new SrcImgPanel(srcImg);
 		
@@ -77,14 +78,14 @@ public class MainView implements IMyView {
 	}
 	
 	
-	
+	/*
 	public void patchSelected(Coordinate2D coord){
 		
 		controller.triggerFiltering(coord);
 		
 	}
 	
-	
+	*/
 	
 	
 	public int getPatchWidth(){

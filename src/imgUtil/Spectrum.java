@@ -1,60 +1,191 @@
 package imgUtil;
 
+import mathUtil.Complex;
+
 public class Spectrum {
 	
-	private double[][] real;
+	private Complex[][] data;
 	
-	private double[][] imaginary;
-	
-	private double[][] amplitude;
+//	private double[][] amplitudeSpectrum;
 	
 	
-	private int width;
+	private int dimX;
 	
-	private int height;
+	private int dimY;
 	
 	
 	
-	
-	
-	public Spectrum(double[][] real){
+	public Spectrum(int dimX, int dimY){
 		
-		this.width = real.length;
-		this.height = real[0].length;
+		this.dimX = dimX;
+		this.dimY = dimY;
 		
-		
-		this.real = real;
-		this.imaginary = new double[width][height];
-	}
-	
-	public Spectrum(double[][] real, double[][] imaginary){
-		
-		this.real = real;
-		this.imaginary = imaginary;
-		
-//		this.width = width;
-//		this.height = height;
-		
-		this.width = real.length;
-		this.height = real[0].length;
+		data = new Complex[dimX][dimY];
 	}
 	
 	
-	public double[][] getReal(){
-		return real;
+	
+	public Spectrum(int dimX, int dimY, double[][] real){
+		
+		if(real != null){
+			
+			if(dimX < 1 || real.length != dimX)
+				throw new IllegalArgumentException();
+			
+				
+			this.dimX= dimX;
+				
+			for(int x = 0; x < dimX; x++){
+					
+				if(dimY < 1 || real[x].length != dimY)
+					throw new IllegalArgumentException();
+					
+					
+			}
+				
+			this.dimY = dimY;
+				
+			
+			
+			this.data = new Complex[dimX][dimY];
+			
+			for(int x = 0; x < dimX; x++){
+				for(int y = 0; y < dimY; y++){
+					
+					this.data[x][y] = new Complex(real[x][y], 0.0);
+										
+				}
+				
+			}
+			
+		}
+		
+	}
+	
+	
+	
+	public Spectrum(int dimX, int dimY, double[][] real, double[][] imaginary){
+		
+		if(real != null && imaginary != null){
+			
+			if(dimX < 1 || real.length != dimX || imaginary.length != dimX)
+				throw new IllegalArgumentException();
+			
+				
+			this.dimX= dimX;
+				
+			for(int x = 0; x < dimX; x++){
+					
+				if(dimY < 1 || real[x].length != dimY || imaginary[x].length != dimY)
+					throw new IllegalArgumentException();
+					
+					
+			}
+				
+			this.dimY = dimY;
+				
+			
+			
+			this.data = new Complex[dimX][dimY];
+			
+			for(int x = 0; x < dimX; x++){
+				for(int y = 0; y < dimY; y++){
+					
+					this.data[x][y] = new Complex(real[x][y], imaginary[x][y]);
+										
+				}
+				
+			}
+			
+			
+			
+			
+		}
+		
+		
+		
+		
+		
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	public Spectrum(int dimX, int dimY, Complex[][] complex){
+		
+		
+		
+		if(complex != null){
+			
+			if(dimX < 1 || complex.length != dimX)
+				throw new IllegalArgumentException();
+			
+				
+			this.dimX= dimX;
+				
+			for(int x = 0; x < dimX; x++){
+					
+				if(dimY < 1 || complex[x].length != dimY)
+					throw new IllegalArgumentException();
+					
+					
+			}
+				
+			this.dimY = dimY;
+				
+			
+			
+			this.data = complex;
+			
+		}
+		
+	}
+	
+	public Complex getPointData(int x, int y){
+		return data[x][y];
 	}
 
-	public double[][] getImaginary(){
-		return imaginary;
+	public void setPointData(int x, int y, Complex pointData){
+		
+		this.data[x][y] = pointData;
 	}
 	
-	public int getWidth(){
-		return width;
+	public double[][] getAmplitudeSpectrum(){
+		
+		
+		double[][] amplitudeSpectrum = new double[dimX][dimY];
+		
+		for(int x = 0; x < dimX; x++){
+			for(int y = 0; y < dimY; y++){
+				
+				amplitudeSpectrum[x][y] = data[x][y].getAmplitude();
+				
+				
+				
+			}
+		}
+		
+		
+		
+		
+		return amplitudeSpectrum;
 	}
 	
-	public int getHeight(){
-		return height;
+	
+	
+	public int getDimX(){
+		return dimX;
 	}
+	
+	public int getDimY(){
+		return dimY;
+	}
+	
 	
 	
 }

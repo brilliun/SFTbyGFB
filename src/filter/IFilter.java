@@ -1,5 +1,9 @@
 package filter;
+import imgUtil.Spectrum;
+
 import java.awt.image.BufferedImage;
+
+import mathUtil.Complex;
 
 
 public interface IFilter {
@@ -14,13 +18,13 @@ public interface IFilter {
 	
 	public void buildKernel(int width, int height);
 	
-	public double pointConvolve(BufferedImage srcImg, int posX, int posY, int edgeAction);
+	public Complex pointConvolve(Spectrum srcImg, int posX, int posY, int edgeAction);
 	
-	public double patchConvolve(BufferedImage srcImg, int posX, int posY, int width, int height, int edgeAction);
+	public Complex patchConvolve(Spectrum srcImg, int posX, int posY, int width, int height, int edgeAction);
 	
-	public double patchConvolveEnergy(BufferedImage srcImg, int posX, int posY, int width, int height, int edgeAction);
+	public double patchConvolveEnergy(Spectrum srcImg, int posX, int posY, int width, int height, int edgeAction);
 	
-	public BufferedImage filterEntireImage(BufferedImage srcImg, int edgeAction);
+	public BufferedImage filterEntireImage(Spectrum srcImg, int edgeAction);
 	
 	
 	

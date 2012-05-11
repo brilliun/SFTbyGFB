@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import mathUtil.Coordinate2D;
 import model.IFilterBankModel;
 import model.ISFTModel;
+import model.SrcImage;
 import gui.IMyView;
 
 public interface IMyController {
@@ -29,7 +30,7 @@ public interface IMyController {
 	public void appendNormalNeedle(double slant, double tilt);
 	
 	
-	public BufferedImage getSrcImage();
+	public SrcImage getSrcImage();
 	
 	
 	public int getPatchWidth();

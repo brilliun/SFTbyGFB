@@ -1,5 +1,8 @@
 package model;
 
+import imgUtil.ImgCommonUtil;
+import imgUtil.Spectrum;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -12,10 +15,29 @@ public class SrcImage {
 	
 	
 	private BufferedImage srcImg;
+	
+	private Spectrum srcImgSpectrum;
 
 	
 	
+	
 	public SrcImage(){
+		
+	}
+	
+	public SrcImage(BufferedImage srcImg){
+		
+		this.srcImg = srcImg;
+		
+		this.srcImgSpectrum = new Spectrum(srcImg.getWidth(), srcImg.getHeight(), ImgCommonUtil.readGrayscaleImageData(srcImg));
+	}
+	
+	
+	public SrcImage(Spectrum srcImgSpectrum){
+		
+		this.srcImgSpectrum = srcImgSpectrum;
+		
+		this.srcImg = ImgCommonUtil.writeToImage(srcImgSpectrum.getDimX(), srcImgSpectrum.getDimY(), srcImgSpectrum.getAmplitudeSpectrum());
 		
 	}
 	
@@ -42,6 +64,8 @@ public class SrcImage {
 			System.out.println("Source Image is NULL!!!");
 		
 		
+		this.srcImgSpectrum = new Spectrum(srcImg.getWidth(), srcImg.getHeight(), ImgCommonUtil.readGrayscaleImageData(srcImg));
+		
 		
 	}
 	
@@ -51,6 +75,17 @@ public class SrcImage {
 		return srcImg;
 	}
 
+	public Spectrum getSpectrum(){
+		return this.srcImgSpectrum;
+	}
 	
 	
+	public int getWidth(){
+		return this.srcImg.getWidth();
+	}
+	
+	
+	public int getHeight(){
+		return this.srcImg.getHeight();
+	}
 }

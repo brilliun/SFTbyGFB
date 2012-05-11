@@ -1,5 +1,7 @@
 package model;
 
+import imgUtil.Spectrum;
+
 import java.awt.image.BufferedImage;
 
 import mathUtil.Coordinate2D;
@@ -45,7 +47,7 @@ public class SFTModel implements ISFTModel{
 	
 	
 	
-	public double[] doShapeEstimation(IFilterBankModel filterBankModel, BufferedImage srcImg, Coordinate2D pointA, Coordinate2D pointB){
+	public double[] doShapeEstimation(IFilterBankModel filterBankModel, Spectrum srcImg, Coordinate2D pointA, Coordinate2D pointB){
 		
 		filterBankModel.doFilteringConcurrent(srcImg, pointA);
 		
@@ -56,7 +58,7 @@ public class SFTModel implements ISFTModel{
 		double[] responseB = filterBankModel.getCurrentResultConcurrent();
 		
 		
-		double[] anglesEstimated = shapeEstimation.estimateShape(responseA, responseB, pointA.centerCoord(), pointB.centerCoord());  
+		double[] anglesEstimated = shapeEstimation.estimateShape(responseA, responseB, pointA.shiftedCoord(), pointB.shiftedCoord());  
 		
 		System.out.println("slant = " + anglesEstimated[0]);
 		
@@ -65,7 +67,7 @@ public class SFTModel implements ISFTModel{
 		return anglesEstimated;
 	}
 	
-	public double[] doShapeEstimationEnergy(IFilterBankModel filterBankModel, BufferedImage srcImg, Coordinate2D pointA, Coordinate2D pointB){
+	public double[] doShapeEstimationEnergy(IFilterBankModel filterBankModel, Spectrum srcImg, Coordinate2D pointA, Coordinate2D pointB){
 		
 		filterBankModel.doFilteringConcurrentEnergy(srcImg, pointA);
 		
@@ -76,7 +78,7 @@ public class SFTModel implements ISFTModel{
 		double[] responseB = filterBankModel.getCurrentResultConcurrentEnergy();
 		
 		
-		double[] anglesEstimated = shapeEstimation.estimateShapeEnergy(responseA, responseB, pointA.centerCoord(), pointB.centerCoord());  
+		double[] anglesEstimated = shapeEstimation.estimateShapeEnergy(responseA, responseB, pointA.shiftedCoord(), pointB.shiftedCoord());  
 		
 		System.out.println("slant = " + anglesEstimated[0]);
 		

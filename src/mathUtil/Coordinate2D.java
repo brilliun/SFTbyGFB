@@ -6,32 +6,38 @@ public class Coordinate2D {
 	
 	private int y;
 	
-	private int dimension;
+	private int dimensionX;
+	
+	private int dimensionY;
 	
 	
 	public Coordinate2D(){
-		this(0, 0, 0);
+		this(0, 0, 0, 0);
 	}
 	
 	
-	public Coordinate2D(int x, int y, int dimension){
+	public Coordinate2D(int x, int y, int dimensionX, int dimensionY){
 		
 		this.x = x;
 		
 		this.y = y;
 		
-		this.dimension = dimension;
+		this.dimensionX = dimensionX;
+		
+		this.dimensionY = dimensionY;
 		
 	}
 	
 	
 	
-	public void setCoordinate(int x, int y, int dimension){
+	public void setCoordinate(int x, int y, int dimensionX, int dimensionY){
 		this.x = x;
 		
 		this.y = y;
 		
-		this.dimension = dimension;
+		this.dimensionX = dimensionX;
+		
+		this.dimensionY = dimensionY;
 	}
 	
 	
@@ -62,23 +68,25 @@ public class Coordinate2D {
 	
 	
 	
-	public Coordinate2D centerCoord(){
-		int x_alias = (x + 952/2) - 1737/2;
+	public Coordinate2D shiftedCoord(){
+//		int x_alias = (x + 952/2) - 1737/2;
+//		
+//		int y_alias = 1154/2 - (y + 296/2);
 		
-		int y_alias = 1154/2 - (y + 296/2);
+		int x_alias = x - dimensionX/2;
 		
-		return new Coordinate2D(x_alias, y_alias, dimension);
+		int y_alias = dimensionY/2 - y;
+		
+		return new Coordinate2D(x_alias, y_alias, dimensionX, dimensionY);
 	}
 	
 	
 	
 	public String toString(){
 		
-		int x_alias = x - dimension/2;
+		Coordinate2D shiftedCoord = this.shiftedCoord();
 		
-		int y_alias = dimension/2 - y;
-		
-		String result = "(" + x_alias + ", " + y_alias + ")";
+		String result = "(" + shiftedCoord.getX() + ", " + shiftedCoord.getY() + ")";
 		
 		return result;
 	}

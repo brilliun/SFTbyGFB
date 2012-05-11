@@ -15,7 +15,7 @@ public interface IMyView {
 
 	public int getPatchHeight();
 	
-	public void patchSelected(Coordinate2D coord);
+//	public void patchSelected(Coordinate2D coord);
 	
 	public void shapeEstimate(Coordinate2D coordA, Coordinate2D coordB);
 	

@@ -10,9 +10,17 @@ public class SFTbyGFB {
 
 	public static void main(String[] args) {
 
+		
+		double viewAngle = 40.0;
+		
+		int imgDimension = 512;
+		
+		
+		
 		FilterBankModel filterBankModel = new FilterBankModel();
 		
-		SFTModel sftModel = new SFTModel(40.0, 512);
+		
+		SFTModel sftModel = new SFTModel(viewAngle, imgDimension);
 
 		MainView mainView = new MainView();
 

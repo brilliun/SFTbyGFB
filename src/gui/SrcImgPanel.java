@@ -1,6 +1,7 @@
 package gui;
 
-import imgUtil.ImgProcessingUtil;
+import imgUtil.ImgCommonUtil;
+import imgUtil.FourierProcessingUtil;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -16,6 +17,7 @@ import java.util.LinkedList;
 import javax.swing.JPanel;
 
 import mathUtil.Coordinate2D;
+import model.SrcImage;
 
 
 import controller.IMyController;
@@ -26,15 +28,19 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 
 	private static final int LEFT_MARGIN = 0;
 	
+	private static final int PANEL_WIDTH = 800;
+	
+	private static final int PANEL_HEIGHT = 800;
+	
 	private static final Color POINT_COLOR = Color.GREEN;
 	
 	private static final Color FORMER_COLOR = Color.RED;
 	
 	private static final Color LATTER_COLOR = Color.BLUE;
 
-	private int width;
-	
-	private int height;
+//	private int width;
+//	
+//	private int height;
 	
 	
 	private static final int NEEDLE_LENGTH = 80;
@@ -43,7 +49,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 	
 	private IMyView mainView;
 	
-	private BufferedImage srcImg;
+	private SrcImage srcImg;
 	
 	private int patchWidth;
 	
@@ -90,15 +96,15 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 		
 	}
 	
-	public SrcImgPanel(BufferedImage srcImg){
+	public SrcImgPanel(SrcImage srcImg){
 		this.srcImg = srcImg;
 		
-		if(srcImg != null){
-		
-			width = srcImg.getWidth();
-		
-			height = srcImg.getHeight();
-		}
+//		if(srcImg != null){
+//		
+//			width = srcImg.getWidth();
+//		
+//			height = srcImg.getHeight();
+//		}
 		
 		
 	
@@ -112,7 +118,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 		
 		if(javax.swing.SwingUtilities.isLeftMouseButton(e)){
 			
-			formerCoord.setCoordinate(e.getX(), e.getY(), srcImg.getWidth());
+			formerCoord.setCoordinate(e.getX(), e.getY(), srcImg.getWidth(), srcImg.getHeight());
 			
 			leftPicked = true;
 			
@@ -120,7 +126,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 		}
 		else if(javax.swing.SwingUtilities.isRightMouseButton(e)){
 			
-			latterCoord.setCoordinate(e.getX(), e.getY(), srcImg.getWidth());
+			latterCoord.setCoordinate(e.getX(), e.getY(), srcImg.getWidth(), srcImg.getHeight());
 			
 			rightPicked = true;
 			
@@ -128,7 +134,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 		}
 		else if(javax.swing.SwingUtilities.isMiddleMouseButton(e)){
 			
-			centerCoord.setCoordinate(e.getX(), e.getY(), srcImg.getWidth());
+			centerCoord.setCoordinate(e.getX(), e.getY(), srcImg.getWidth(), srcImg.getHeight());
 			
 			System.out.println("Center: " + centerCoord.toString());
 			
@@ -148,7 +154,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 		if(!leftPicked && !rightPicked && !centerPicked)
 			return;
 		
-		
+		/*
 		if(e.getKeyChar() == 'f'){
 			
 			if(leftPicked){
@@ -163,125 +169,43 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 			
 			
 		}
-		else if(e.getKeyChar() == 'r'){
+		*/
+		if(e.getKeyChar() == 'r'){ // estimate the orientation by any two patches selected
 		
 			if(leftPicked && rightPicked){
+			
+				estimateByFormerLatter();
 				
-				centerPicked = true;
-				needleColor.add(Color.GREEN);
-				
-				int centerX = (formerCoord.getX() + latterCoord.getX())/2;
-				int centerY = (formerCoord.getY() + latterCoord.getY())/2;
-				
-				centerCoord.setCoordinate(centerX, centerY, srcImg.getWidth());
-				
-				
-				mainView.shapeEstimate(formerCoord, latterCoord);
-				
-				
+				this.repaint();
 			}
 		}
-		/*
-		else if(e.getKeyChar() == 'n'){
-			
-			
-			
-			int[][] pos = {{-146, 422}, {-118, 382}, {-85, 338}, {-49, 289}, {-8, 235}, {40, 172}, {81, 113}, 
-							 {-215, 415}, {-189, 373}, {-157, 334}, {-126, 282}, {-90, 225}, {-46, 162}, {-3, 95},
-							 {-283, 388}, {-254, 340}, {-226, 291}, {-196, 240}, {-162, 180}, {-127, 119}, {-88, 51},
-							 {-352, 354}, {-330, 311}, {-305, 266}, {-279, 213}, {-252, 159}, {-220, 95}, {-184, 25},
-							 {-404, 307}, {-385, 263}, {-363,213}, {-330, 133}, {-305, 78}, {-287, 38}, {-258, -32}};
-			
-			double[][] angs = {{52, 78}, {41, 86}, {44, 71}, {48, 67}, {48, 72}, {41, 90}, {34, 67},
-								  {45, 97}, {54, 98}, {78, 89}, {55, 87}, {25, 94}, {68, 95}, {73, 110},
-								  {45, 107}, {54, 107}, {39, 115}, {33, 125}, {50, 118}, {43, 120}, {45, 115},
-								  {57, 118}, {51, 129}, {37, 124}, {56, 121}, {55, 137}, {34, 135}, {36, 121},
-								  {46, 139}, {53, 130}, {58, 129}, {49, 142}, {40, 134}, {58, 146}, {45, 140}};
-			
-			
-			for(int i = 0; i < pos.length; i++){
-				
-				pos[i][0] = pos[i][0] + 512;
-				pos[i][1] = 512 - pos[i][1];
-				
-				positions.add(pos[i]);
-				angles.add(angs[i]);
-				
-			}
-			this.repaint();
-		}*/
 		
-		else if(e.getKeyChar() == 'd'){
-			System.out.println("diagonal");
+		
+		else if(e.getKeyChar() == 'd'){ // estimate the orientation by two pairs of diagonal patches around a center point
+			
 			if(centerPicked){
-
+			
+				estimateByCenterDiagonal();
 				
-				
-				
-				int topLeftX = centerCoord.getX() - patchWidth/2;
-				int topLeftY = centerCoord.getY() - patchHeight/2;
-				
-				int bottomRightX = centerCoord.getX() + patchWidth/2;
-				int bottomRightY = centerCoord.getY() + patchHeight/2;
-						
-//				needleColor = Color.RED;
-				needleColor.add(Color.GREEN);
-				
-				mainView.shapeEstimate(new Coordinate2D(topLeftX, topLeftY, srcImg.getWidth()), new Coordinate2D(bottomRightX, bottomRightY, srcImg.getWidth()));
-				
-				
-				int topRightX = centerCoord.getX() + patchWidth/2;
-				int topRightY = centerCoord.getY() + patchHeight/2;
-				
-				int bottomLeftX = centerCoord.getX() - patchWidth/2;
-				int bottomLeftY = centerCoord.getY() - patchHeight/2;
-						
-				needleColor.add(Color.GREEN);
-				
-				mainView.shapeEstimate(new Coordinate2D(topRightX, topRightY, srcImg.getWidth()), new Coordinate2D(bottomLeftX, bottomLeftY, srcImg.getWidth()));
-				
-				
+				this.repaint();
 			}
 			
 			
 		}
 		else if(e.getKeyChar() == 'c'){
-			System.out.println("cross");
+			
 			if(centerPicked){
 
+				estimateByCenterCross();
 				
-				
-				
-				int leftX = centerCoord.getX() - patchWidth/2;
-				int leftY = centerCoord.getY();
-				
-				int rightX = centerCoord.getX() + patchWidth/2;
-				int rightY = centerCoord.getY();
-						
-//				needleColor = Color.RED;
-				needleColor.add(Color.GREEN);
-				
-				mainView.shapeEstimate(new Coordinate2D(leftX, leftY, srcImg.getWidth()), new Coordinate2D(rightX, rightY, srcImg.getWidth()));
-				
-				
-				int topX = centerCoord.getX();
-				int topY = centerCoord.getY() + patchHeight/2;
-				
-				int bottomX = centerCoord.getX();
-				int bottomY = centerCoord.getY() - patchHeight/2;
-						
-				needleColor.add(Color.GREEN);
-				
-				mainView.shapeEstimate(new Coordinate2D(topX, topY, srcImg.getWidth()), new Coordinate2D(bottomX, bottomY, srcImg.getWidth()));
-				
-				
+				this.repaint();
 			}
 			
 			
 		}
 		else if(e.getKeyChar() == 's'){
 			
-			System.out.println("Box -- Diagonal & Cross");
+			System.out.println("Simple -- Diagonal & Cross");
 			
 			if(centerPicked){
 				
@@ -325,31 +249,16 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 			}
 			
 		}
-		
-//		else if(e.getKeyChar() == '1'){
-//			needleColor.add(Color.RED);
-//			attatchNormalNeedle(62, 349);
-//			
-//		}
-//		else if(e.getKeyChar() == '2'){
-//			needleColor.add(Color.RED);
-//			attatchNormalNeedle(70, 90);
-//			
-//		}
-//		else if(e.getKeyChar() == '3'){
-//			needleColor.add(Color.RED);
-//			attatchNormalNeedle(35.5, 210.6);
-//			
-//		}
-		else if(e.getKeyChar() == 'p'){
-//			System.out.println("preprocessing");
+	
+		else if(e.getKeyChar() == 'p'){ // pre-processing of the target image
 			
 			
-			this.srcImg = ImgProcessingUtil.bandpassFiltering(srcImg, 0.1, 0.45);
+			this.srcImg = new SrcImage(FourierProcessingUtil.bandpassFiltering(srcImg.getSrcImg(), 0.1, 0.45));
 			
 			this.repaint();
 		}
-		else{
+		
+		else{ // move point
 		
 			Coordinate2D activeCoord = null;
 			
@@ -364,6 +273,91 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 			
 			this.repaint();
 		}
+		
+	}
+	
+	
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	
+	
+	private void estimateByFormerLatter(){
+		
+		
+			
+			centerPicked = true;
+			needleColor.add(Color.GREEN);
+			
+			int centerX = (formerCoord.getX() + latterCoord.getX())/2;
+			int centerY = (formerCoord.getY() + latterCoord.getY())/2;
+			
+			centerCoord.setCoordinate(centerX, centerY, srcImg.getWidth(), srcImg.getHeight());
+			
+			
+			mainView.shapeEstimate(formerCoord, latterCoord);
+			
+			
+		
+	}
+	
+	
+	private void estimateByCenterDiagonal(){
+		
+			
+			int topLeftX = centerCoord.getX() - patchWidth/2;
+			int topLeftY = centerCoord.getY() - patchHeight/2;
+			
+			int bottomRightX = centerCoord.getX() + patchWidth/2;
+			int bottomRightY = centerCoord.getY() + patchHeight/2;
+					
+//			needleColor = Color.RED;
+			needleColor.add(Color.GREEN);
+			
+			mainView.shapeEstimate(new Coordinate2D(topLeftX, topLeftY, srcImg.getWidth(), srcImg.getHeight()), new Coordinate2D(bottomRightX, bottomRightY, srcImg.getWidth(), srcImg.getHeight()));
+			
+			
+			int topRightX = centerCoord.getX() + patchWidth/2;
+			int topRightY = centerCoord.getY() + patchHeight/2;
+			
+			int bottomLeftX = centerCoord.getX() - patchWidth/2;
+			int bottomLeftY = centerCoord.getY() - patchHeight/2;
+					
+			needleColor.add(Color.GREEN);
+			
+			mainView.shapeEstimate(new Coordinate2D(topRightX, topRightY, srcImg.getWidth(), srcImg.getHeight()), new Coordinate2D(bottomLeftX, bottomLeftY, srcImg.getWidth(), srcImg.getHeight()));
+			
+			
+		
+		
+	}
+	
+	
+	private void estimateByCenterCross(){
+		
+
+		int leftX = centerCoord.getX() - patchWidth/2;
+		int leftY = centerCoord.getY();
+		
+		int rightX = centerCoord.getX() + patchWidth/2;
+		int rightY = centerCoord.getY();
+				
+//		needleColor = Color.RED;
+		needleColor.add(Color.GREEN);
+		
+		mainView.shapeEstimate(new Coordinate2D(leftX, leftY, srcImg.getWidth(), srcImg.getHeight()), new Coordinate2D(rightX, rightY, srcImg.getWidth(), srcImg.getHeight()));
+		
+		
+		int topX = centerCoord.getX();
+		int topY = centerCoord.getY() + patchHeight/2;
+		
+		int bottomX = centerCoord.getX();
+		int bottomY = centerCoord.getY() - patchHeight/2;
+				
+		needleColor.add(Color.GREEN);
+		
+		mainView.shapeEstimate(new Coordinate2D(topX, topY, srcImg.getWidth(), srcImg.getHeight()), new Coordinate2D(bottomX, bottomY, srcImg.getWidth(), srcImg.getHeight()));
+		
 		
 	}
 	
@@ -426,7 +420,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 
 //		needleColor.add(Color.GREEN);
 		
-		mainView.shapeEstimate(new Coordinate2D(topLeftX, topLeftY, srcImg.getWidth()), new Coordinate2D(bottomRightX, bottomRightY, srcImg.getWidth()));
+		mainView.shapeEstimate(new Coordinate2D(topLeftX, topLeftY, srcImg.getWidth(), srcImg.getHeight()), new Coordinate2D(bottomRightX, bottomRightY, srcImg.getWidth(), srcImg.getHeight()));
 		
 		
 		int topRightX = centerX + patchWidth/2;
@@ -437,7 +431,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 				
 //		needleColor.add(Color.GREEN);
 		
-		mainView.shapeEstimate(new Coordinate2D(topRightX, topRightY, srcImg.getWidth()), new Coordinate2D(bottomLeftX, bottomLeftY, srcImg.getWidth()));
+		mainView.shapeEstimate(new Coordinate2D(topRightX, topRightY, srcImg.getWidth(), srcImg.getHeight()), new Coordinate2D(bottomLeftX, bottomLeftY, srcImg.getWidth(), srcImg.getHeight()));
 		
 		
 		
@@ -451,7 +445,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 
 //		needleColor.add(Color.GREEN);
 		
-		mainView.shapeEstimate(new Coordinate2D(leftX, leftY, srcImg.getWidth()), new Coordinate2D(rightX, rightY, srcImg.getWidth()));
+		mainView.shapeEstimate(new Coordinate2D(leftX, leftY, srcImg.getWidth(), srcImg.getHeight()), new Coordinate2D(rightX, rightY, srcImg.getWidth(), srcImg.getHeight()));
 		
 		
 		int topX = centerX;
@@ -462,7 +456,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 				
 //		needleColor.add(Color.GREEN);
 		
-		mainView.shapeEstimate(new Coordinate2D(topX, topY, srcImg.getWidth()), new Coordinate2D(bottomX, bottomY, srcImg.getWidth()));
+		mainView.shapeEstimate(new Coordinate2D(topX, topY, srcImg.getWidth(), srcImg.getHeight()), new Coordinate2D(bottomX, bottomY, srcImg.getWidth(), srcImg.getHeight()));
 		
 		double slantAll = 0;
 		double tiltAll = 0;
@@ -508,7 +502,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 
 //		needleColor.add(Color.GREEN);
 		
-		mainView.shapeEstimateEnergy(new Coordinate2D(topLeftX, topLeftY, srcImg.getWidth()), new Coordinate2D(bottomRightX, bottomRightY, srcImg.getWidth()));
+		mainView.shapeEstimateEnergy(new Coordinate2D(topLeftX, topLeftY, srcImg.getWidth(), srcImg.getHeight()), new Coordinate2D(bottomRightX, bottomRightY, srcImg.getWidth(), srcImg.getHeight()));
 		
 		
 		int topRightX = centerX + patchWidth/2;
@@ -519,7 +513,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 				
 //		needleColor.add(Color.GREEN);
 		
-		mainView.shapeEstimateEnergy(new Coordinate2D(topRightX, topRightY, srcImg.getWidth()), new Coordinate2D(bottomLeftX, bottomLeftY, srcImg.getWidth()));
+		mainView.shapeEstimateEnergy(new Coordinate2D(topRightX, topRightY, srcImg.getWidth(), srcImg.getHeight()), new Coordinate2D(bottomLeftX, bottomLeftY, srcImg.getWidth(), srcImg.getHeight()));
 		
 		
 		
@@ -533,7 +527,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 
 //		needleColor.add(Color.GREEN);
 		
-		mainView.shapeEstimateEnergy(new Coordinate2D(leftX, leftY, srcImg.getWidth()), new Coordinate2D(rightX, rightY, srcImg.getWidth()));
+		mainView.shapeEstimateEnergy(new Coordinate2D(leftX, leftY, srcImg.getWidth(), srcImg.getHeight()), new Coordinate2D(rightX, rightY, srcImg.getWidth(), srcImg.getHeight()));
 		
 		
 		int topX = centerX;
@@ -544,7 +538,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 				
 //		needleColor.add(Color.GREEN);
 		
-		mainView.shapeEstimateEnergy(new Coordinate2D(topX, topY, srcImg.getWidth()), new Coordinate2D(bottomX, bottomY, srcImg.getWidth()));
+		mainView.shapeEstimateEnergy(new Coordinate2D(topX, topY, srcImg.getWidth(), srcImg.getHeight()), new Coordinate2D(bottomX, bottomY, srcImg.getWidth(), srcImg.getHeight()));
 		
 		double slantAll = 0;
 		double tiltAll = 0;
@@ -593,7 +587,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 	
 	protected void paintComponent(Graphics g) {
 		if(srcImg != null)
-			g.drawImage(srcImg, 0, 0, this);
+			g.drawImage(srcImg.getSrcImg(), 0, 0, this);
         
         
         drawBoundary(g);
@@ -751,7 +745,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 		
 		this.setLayout(null);
 		
-		this.setBounds(LEFT_MARGIN, UP_MARGIN, width, height);
+		this.setBounds(LEFT_MARGIN, UP_MARGIN, PANEL_WIDTH, PANEL_HEIGHT);
 		
 		this.setFocusable(true);
 		

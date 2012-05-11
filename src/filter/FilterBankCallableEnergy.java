@@ -1,5 +1,7 @@
 package filter;
 
+import imgUtil.Spectrum;
+
 import java.awt.image.BufferedImage;
 import java.util.LinkedHashMap;
 import java.util.concurrent.Callable;
@@ -14,7 +16,7 @@ public class FilterBankCallableEnergy implements Callable<LinkedHashMap>{
 	private int id; 
 	
 	
-	private BufferedImage srcImg;
+	private Spectrum srcImg;
 	
 	private int posX;
 	
@@ -45,7 +47,7 @@ public class FilterBankCallableEnergy implements Callable<LinkedHashMap>{
 		this.filterBank = filterBank;
 	}
 	
-	public void setFilteringParams(BufferedImage srcImg, int posX, int posY, int patchWidth, int patchHeight, int edgeAction){
+	public void setFilteringParams(Spectrum srcImg, int posX, int posY, int patchWidth, int patchHeight, int edgeAction){
 		
 		
 		this.srcImg = srcImg;

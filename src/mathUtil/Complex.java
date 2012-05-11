@@ -42,10 +42,21 @@ public class Complex {
 		this.imaginary = imaginary;
 	}
 	
+	
+	public double getAmplitude(){
+		return Math.sqrt(this.real * this.real + this.imaginary + this.imaginary);
+	}
+	
+	public double getPower(){
+		return this.real * this.real + this.imaginary + this.imaginary;
+	}
+	
 	public Complex getConjugate() {
 	    return new Complex(this.real, -this.imaginary);
 	  }
 
+	
+	
 	
 	public Complex add(Complex op) {
 	    Complex result = new Complex();
@@ -67,6 +78,16 @@ public class Complex {
 	    result.setIm(this.real * op.getIm() + this.imaginary * op.getRe());
 	    return result;
 	  }
+	  
+	  public Complex mul(double realOp){
+		  
+		  Complex result = new Complex();
+		  result.setRe(this.real * realOp);
+		  result.setIm(this.imaginary * realOp);
+		  
+		  return result;
+	  }
+	  
 
 	  public Complex div(Complex op) {
 	    Complex result = new Complex(this);

@@ -1,5 +1,7 @@
 package model;
 
+import imgUtil.Spectrum;
+
 import java.awt.image.BufferedImage;
 
 import mathUtil.Coordinate2D;
@@ -11,8 +13,8 @@ public interface ISFTModel {
 	
 	public void init();
 	
-	public double[] doShapeEstimation(IFilterBankModel filterBankModel, BufferedImage srcImg, Coordinate2D coordA, Coordinate2D coordB);
+	public double[] doShapeEstimation(IFilterBankModel filterBankModel, Spectrum srcImg, Coordinate2D coordA, Coordinate2D coordB);
 	
-	public double[] doShapeEstimationEnergy(IFilterBankModel filterBankModel, BufferedImage srcImg, Coordinate2D coordA, Coordinate2D coordB);
+	public double[] doShapeEstimationEnergy(IFilterBankModel filterBankModel, Spectrum srcImg, Coordinate2D coordA, Coordinate2D coordB);
 
 }

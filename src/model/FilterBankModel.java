@@ -1,5 +1,7 @@
 package model;
 
+import imgUtil.Spectrum;
+
 import java.awt.image.BufferedImage;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -8,6 +10,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
+import mathUtil.Complex;
 import mathUtil.Coordinate2D;
 
 import controller.IMyController;
@@ -37,13 +40,13 @@ public class FilterBankModel implements IFilterBankModel{
 	
 	private LinkedList<FilterBankCallableEnergy> filterBankCallableEnergyList = new LinkedList<FilterBankCallableEnergy>();
 	
-	private int patchWidth;
+	private static int patchWidth = 32;
 	
-	private int patchHeight;
+	private static int patchHeight = 32;
 	
-	private int kernelWidth;
+	private static int kernelWidth = 64;
 	
-	private int kernelHeight;
+	private static int kernelHeight = 64;
 	
 //	private BufferedImage srcImg;
 	
@@ -54,7 +57,7 @@ public class FilterBankModel implements IFilterBankModel{
 	
 	private FilterBank entireFilterBankEnergy;
 	
-	private LinkedHashMap<IFilter, Double> resultMap;
+	private LinkedHashMap<IFilter, Complex> resultMap;
 	
 	
 	
@@ -81,13 +84,6 @@ public class FilterBankModel implements IFilterBankModel{
 	public void init() {
 		// TODO Auto-generated method stub
 		
-		patchWidth = 32;
-		
-		patchHeight = 32;
-		
-		kernelWidth = 64;
-		
-		kernelHeight = 64;
 		
 		prepareGaborFilterBankConcurrent();
 		
@@ -96,18 +92,18 @@ public class FilterBankModel implements IFilterBankModel{
 	
 	
 	public int getPatchWidth(){
-		return this.patchWidth;
+		return patchWidth;
 	}
 	
 	public int getPatchHeight(){
-		return this.patchHeight;
+		return patchHeight;
 	}
 	
 	
 	
 
 	
-	public int doFiltering(BufferedImage srcImg, Coordinate2D coord) {
+	public int doFiltering(Spectrum srcImg, Coordinate2D coord) {
 		// TODO Auto-generated method stub
 		if(srcImg == null){
 			return NO_SRCIMG;
@@ -127,7 +123,7 @@ public class FilterBankModel implements IFilterBankModel{
 	
 	
 	
-	public int doFilteringConcurrent(BufferedImage srcImg, Coordinate2D coord){
+	public int doFilteringConcurrent(Spectrum srcImg, Coordinate2D coord){
 		
 		if(srcImg == null){
 			return NO_SRCIMG;
@@ -155,7 +151,7 @@ public class FilterBankModel implements IFilterBankModel{
 		
 	}
 	
-	public int doFilteringConcurrentEnergy(BufferedImage srcImg, Coordinate2D coord){
+	public int doFilteringConcurrentEnergy(Spectrum srcImg, Coordinate2D coord){
 		
 		if(srcImg == null){
 			return NO_SRCIMG;
@@ -190,15 +186,15 @@ public class FilterBankModel implements IFilterBankModel{
 		double[] result = new double[resultSize];
 		
 		
-		Iterator<Entry<IFilter, Double>> iter = resultMap.entrySet().iterator();
+		Iterator<Entry<IFilter, Complex>> iter = resultMap.entrySet().iterator();
 		
 		int idx = 0;
 		
 		while(iter.hasNext()){
 			
-			Entry<IFilter, Double> resultEntry = iter.next();
+			Entry<IFilter, Complex> resultEntry = iter.next();
 		
-			result[idx++] = resultEntry.getValue(); 
+			result[idx++] = resultEntry.getValue().getAmplitude(); 
 			
 			
 		}	
@@ -225,13 +221,13 @@ public class FilterBankModel implements IFilterBankModel{
 			try {
 				LinkedHashMap subresultMap = filterBankTask.get();
 				
-				Iterator<Entry<IFilter, Double>> resultIter = subresultMap.entrySet().iterator();
+				Iterator<Entry<IFilter, Complex>> resultIter = subresultMap.entrySet().iterator();
 				
 				while(resultIter.hasNext()){
 					
-					Entry<IFilter, Double> resultEntry = resultIter.next();
+					Entry<IFilter, Complex> resultEntry = resultIter.next();
 					
-					results[idx++] = resultEntry.getValue();
+					results[idx++] = resultEntry.getValue().getAmplitude();
 					
 				}
 				
@@ -296,16 +292,16 @@ public class FilterBankModel implements IFilterBankModel{
 	
 	public void printCurrentResult(){
 		
-		Iterator<Entry<IFilter, Double>> iter = resultMap.entrySet().iterator();
+		Iterator<Entry<IFilter, Complex>> iter = resultMap.entrySet().iterator();
 		
 		StringBuilder stringBd = new StringBuilder();
 		
 		while(iter.hasNext()){
 			
-			Entry<IFilter, Double> resultEntry = iter.next();
+			Entry<IFilter, Complex> resultEntry = iter.next();
 			
 //			stringBd.append(resultEntry.getKey().getTag() + ": ");
-			stringBd.append(resultEntry.getValue() + ", ");
+			stringBd.append(resultEntry.getValue().getAmplitude() + ", ");
 			
 		}
 		

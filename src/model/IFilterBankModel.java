@@ -1,5 +1,7 @@
 package model;
 
+import imgUtil.Spectrum;
+
 import java.awt.image.BufferedImage;
 
 import mathUtil.Coordinate2D;
@@ -18,11 +20,11 @@ public interface IFilterBankModel {
 	
 	public int getPatchHeight();
 	
-	public int doFiltering(BufferedImage srcImg, Coordinate2D coord);
+	public int doFiltering(Spectrum srcImg, Coordinate2D coord);
 	
-	public int doFilteringConcurrent(BufferedImage srcImg, Coordinate2D coord);
+	public int doFilteringConcurrent(Spectrum srcImg, Coordinate2D coord);
 	
-	public int doFilteringConcurrentEnergy(BufferedImage srcImg, Coordinate2D coord);
+	public int doFilteringConcurrentEnergy(Spectrum srcImg, Coordinate2D coord);
 	
 	public void printCurrentResult();
 	

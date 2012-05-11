@@ -1,6 +1,7 @@
 package filter;
 
 import imgUtil.ImgCommonUtil;
+import imgUtil.Spectrum;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
@@ -116,7 +117,7 @@ public class GaborFilter implements IFilter{
 	
 
 	
-	public double patchConvolve(BufferedImage inputImg, int centerX, int centerY, int patchSize, int edgeAction){
+	public Complex patchConvolve(Spectrum inputImg, int centerX, int centerY, int patchSize, int edgeAction){
 		
 		int shift;
 		
@@ -133,7 +134,28 @@ public class GaborFilter implements IFilter{
 	
 	
 	
-	public double patchConvolve(BufferedImage inputImg, int startX, int startY, int width, int height, int edgeAction){
+	public Complex patchConvolve(Spectrum inputImg, int startX, int startY, int width, int height, int edgeAction){
+		
+		
+		Complex response = new Complex();
+		
+		int endX = startX + width;
+		int endY = startY + height;
+		
+		for(int x = startX; x < endX; x++){
+			for(int y = startY; y < endY; y++){
+				
+				response = response.add(pointConvolve(inputImg, x, y, edgeAction));// * gaussianFunction(x - 16.5, y - 16.5);
+				
+				
+			}
+		}
+		
+		return response;
+		
+	}
+	
+	public double patchConvolveEnergy(Spectrum inputImg, int startX, int startY, int width, int height, int edgeAction){
 		
 		
 		double response = 0.0;
@@ -144,30 +166,9 @@ public class GaborFilter implements IFilter{
 		for(int x = startX; x < endX; x++){
 			for(int y = startY; y < endY; y++){
 				
-				response += pointConvolve(inputImg, x, y, edgeAction);// * gaussianFunction(x - 16.5, y - 16.5);
+				response += pointConvolve(inputImg, x, y, edgeAction).getPower(); 
 				
 				
-			}
-		}
-		
-		return response;
-		
-	}
-	
-	public double patchConvolveEnergy(BufferedImage inputImg, int startX, int startY, int width, int height, int edgeAction){
-		
-		
-		double response = 0.0;
-		
-		int endX = startX + width;
-		int endY = startY + height;
-		
-		for(int x = startX; x < endX; x++){
-			for(int y = startY; y < endY; y++){
-				
-				double responseAmp = pointConvolve(inputImg, x, y, edgeAction); 
-				
-				response += responseAmp * responseAmp;// * gaussianFunction(x - 16.5, y - 16.5);
 				
 				
 			}
@@ -178,8 +179,8 @@ public class GaborFilter implements IFilter{
 	}
 	
 	
-	
-	public double dotProduct(BufferedImage inputImg, int posX, int posY, int edgeAction){
+	/*
+	public double dotProduct(Spectrum inputImg, int posX, int posY, int edgeAction){
 		
 		if(this.kernel == null){
 			System.out.println("No Kernel");
@@ -256,19 +257,17 @@ public class GaborFilter implements IFilter{
 		
 	}
 	
-	
+	*/
 	
 
-	public double pointConvolve(BufferedImage inputImg, int posX, int posY, int edgeAction){
+	public Complex pointConvolve(Spectrum inputImg, int posX, int posY, int edgeAction){
 		
 		if(this.kernel == null){
 			System.out.println("No Kernel");
-			return 0;
+			return null;
 		}
 		
-		
-		double responseRe = 0;
-		double responseIm = 0;
+		Complex response = new Complex();
 		
 		
 		int kernelWidth = kernel.getWidth();
@@ -276,9 +275,9 @@ public class GaborFilter implements IFilter{
 		int kernelHeight = kernel.getHeight();
 		
 		
-		Raster inputRaster = inputImg.getData();
+//		Raster inputRaster = inputImg.getData();
 		
-		int band = inputRaster.getNumBands();
+//		int band = inputRaster.getNumBands();
 		
 //		System.out.println("band=" + band);
 		
@@ -288,7 +287,7 @@ public class GaborFilter implements IFilter{
 		
 		int kernelIdxCol, kernelIdxRow;
 		
-		double[] pixel = new double[band];
+//		double[] pixel = new double[band];
 		
 		double kernelCoefficientRe, kernelCoefficientIm;
 		
@@ -304,29 +303,22 @@ public class GaborFilter implements IFilter{
 				
 				int pixelOffsetY = posY + (kernelIdxRow - kernel.getYOrigin());
 				
+
+					
+				Complex pixel = inputImg.getPointData(pixelOffsetX, pixelOffsetY);
+					
 				
-				for(int b = 0; b < band; b++){
-					
-					pixel[b] = inputRaster.getSampleDouble(pixelOffsetX, pixelOffsetY, b);
-					
-				}
 				
 
-				if(band == 1){
-					responseRe += (pixel[0] * kernelCoefficientRe);
-					responseIm += (pixel[0] * kernelCoefficientIm);
-				}
-				else{
-					double pixelVal = ImgCommonUtil.convertRGBtoGrayscale(pixel[0], pixel[1], pixel[2]);
-					responseRe += (pixelVal * kernelCoefficientRe);
-					responseIm += (pixelVal * kernelCoefficientIm);
-				}
+				response = response.add(pixel.mul(kernel.getComplexCoefficient(kernelIdxCol, kernelIdxRow)));
+				
+
 				
 			}
 			
 			
 		}
-		double response = Math.sqrt(responseRe * responseRe + responseIm * responseIm);
+
 		
 		
 		return response;
@@ -397,7 +389,7 @@ public class GaborFilter implements IFilter{
 
 
 	
-	public BufferedImage filterEntireImage(BufferedImage srcImg, int edgeAction) {
+	public BufferedImage filterEntireImage(Spectrum srcImg, int edgeAction) {
 		// TODO Auto-generated method stub
 		return null;
 	}

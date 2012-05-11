@@ -25,7 +25,7 @@ public class MainController implements IMyController {
 	
 	public void triggerFiltering(Coordinate2D centerCoord){
 		
-		filterBankModel.doFiltering(filterImage.getSrcImg(), centerCoord);
+		filterBankModel.doFiltering(filterImage.getSpectrum(), centerCoord);
 		
 		filterBankModel.printCurrentResult();
 		
@@ -37,7 +37,7 @@ public class MainController implements IMyController {
 	public void triggerShapeEstimation(Coordinate2D coordA, Coordinate2D coordB) {
 		
 		
-		double[] anglesEstimated = sftModel.doShapeEstimation(filterBankModel, filterImage.getSrcImg(), coordA, coordB);
+		double[] anglesEstimated = sftModel.doShapeEstimation(filterBankModel, filterImage.getSpectrum(), coordA, coordB);
 		
 		appendNormalNeedle(anglesEstimated[0], anglesEstimated[1]);
 	}
@@ -45,7 +45,7 @@ public class MainController implements IMyController {
 	public void triggerShapeEstimationEnergy(Coordinate2D coordA, Coordinate2D coordB) {
 		
 		
-		double[] anglesEstimated = sftModel.doShapeEstimationEnergy(filterBankModel, filterImage.getSrcImg(), coordA, coordB);
+		double[] anglesEstimated = sftModel.doShapeEstimationEnergy(filterBankModel, filterImage.getSpectrum(), coordA, coordB);
 		
 		appendNormalNeedle(anglesEstimated[0], anglesEstimated[1]);
 	}
@@ -97,7 +97,7 @@ public class MainController implements IMyController {
 	
 	private void initModel(){
 		
-		filterImage = new SrcImage("test/11_s25t160.bmp");
+		filterImage = new SrcImage("test/5_s30t250.bmp");
 		
 		
 		filterBankModel.init();
@@ -133,10 +133,10 @@ public class MainController implements IMyController {
 	}
 
 	
-	public BufferedImage getSrcImage() {
+	public SrcImage getSrcImage() {
 		// TODO Auto-generated method stub
 		
-		return filterImage.getSrcImg();
+		return filterImage;
 	}
 
 	

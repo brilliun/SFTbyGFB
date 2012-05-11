@@ -1,9 +1,13 @@
 package filter;
 
+import imgUtil.Spectrum;
+
 import java.awt.image.BufferedImage;
 import java.util.LinkedHashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+
+import mathUtil.Complex;
 
 public class FilterBank implements IFilter{
 	
@@ -47,21 +51,21 @@ public class FilterBank implements IFilter{
 	}
 
 	
-	public double patchConvolve(BufferedImage srcImg, int posX, int posY,	int width, int height, int edgeAction) {
+	public Complex patchConvolve(Spectrum srcImg, int posX, int posY,	int width, int height, int edgeAction) {
 		
-		double totalResponse = 0;
+		Complex totalResponse = new Complex();
 		
 		Iterator<IFilter> iter = filterBank.iterator();
 		
 		while(iter.hasNext()){
-			totalResponse += iter.next().patchConvolve(srcImg, posX, posY, width, height, edgeAction);
+			totalResponse = totalResponse.add(iter.next().patchConvolve(srcImg, posX, posY, width, height, edgeAction));
 		}
 		
 				
 		
 		return totalResponse;
 	}
-	public double patchConvolveEnergy(BufferedImage srcImg, int posX, int posY, int width, int height, int edgeAction) {
+	public double patchConvolveEnergy(Spectrum srcImg, int posX, int posY, int width, int height, int edgeAction) {
 		// TODO Auto-generated method stub
 		double totalResponse = 0;
 		
@@ -74,13 +78,13 @@ public class FilterBank implements IFilter{
 		return totalResponse;
 	}
 	
-	public LinkedHashMap<IFilter, Double> patchConvolveResultMap(BufferedImage srcImg, int posX, int posY, int patchWidth, int patchHeight, int edgeAction){
+	public LinkedHashMap<IFilter, Complex> patchConvolveResultMap(Spectrum srcImg, int posX, int posY, int patchWidth, int patchHeight, int edgeAction){
 		
 		
-		LinkedHashMap<IFilter, Double> resultMap = new LinkedHashMap<IFilter, Double>();
+		LinkedHashMap<IFilter, Complex> resultMap = new LinkedHashMap<IFilter, Complex>();
 		
 		Iterator<IFilter> iter = filterBank.iterator();
-		double response = 0;
+		Complex response = new Complex();
 		
 		while(iter.hasNext()){
 			
@@ -88,7 +92,7 @@ public class FilterBank implements IFilter{
 			
 			response = filter.patchConvolve(srcImg, posX, posY, patchWidth, patchHeight, edgeAction);
 			
-			resultMap.put(filter, new Double(response));
+			resultMap.put(filter, response);
 			
 		}
 		
@@ -97,7 +101,7 @@ public class FilterBank implements IFilter{
 		
 	}
 	
-	public LinkedHashMap<IFilter, Double> patchConvolveResultMapEnergy(BufferedImage srcImg, int posX, int posY, int patchWidth, int patchHeight, int edgeAction){
+	public LinkedHashMap<IFilter, Double> patchConvolveResultMapEnergy(Spectrum srcImg, int posX, int posY, int patchWidth, int patchHeight, int edgeAction){
 		
 		
 		LinkedHashMap<IFilter, Double> resultMap = new LinkedHashMap<IFilter, Double>();
@@ -121,7 +125,7 @@ public class FilterBank implements IFilter{
 	}
 
 	
-	public BufferedImage filterEntireImage(BufferedImage srcImg, int edgeAction) {
+	public BufferedImage filterEntireImage(Spectrum srcImg, int edgeAction) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -151,10 +155,10 @@ public class FilterBank implements IFilter{
 	}
 
 	
-	public double pointConvolve(BufferedImage srcImg, int posX, int posY,
+	public Complex pointConvolve(Spectrum srcImg, int posX, int posY,
 			int edgeAction) {
 		// TODO Auto-generated method stub
-		return 0;
+		return new Complex();
 	}
 
 	
