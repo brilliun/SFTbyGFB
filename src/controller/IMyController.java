@@ -24,6 +24,8 @@ public interface IMyController {
 	
 	public void updateView();
 	
+	public void updateSrcImage(SrcImage srcImg);
+	
 	
 	public void updateModel();
 	
@@ -36,6 +38,10 @@ public interface IMyController {
 	public int getPatchWidth();
 	
 	public int getPatchHeight();
+	
+	public int getSrcImgWidth();
+	
+	public int getSrcImgHeight();
 	
 	public void triggerFiltering(Coordinate2D centerCoord);
 	

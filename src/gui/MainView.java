@@ -65,7 +65,7 @@ public class MainView implements IMyView {
 		
 		SrcImage srcImg = controller.getSrcImage();
 		
-		srcImgPanel = new SrcImgPanel(srcImg);
+//		srcImgPanel = new SrcImgPanel(srcImg);
 		
 		srcImgPanel.setMainView(this);
 		
@@ -87,6 +87,11 @@ public class MainView implements IMyView {
 	
 	*/
 	
+	public void updateSrcImg(SrcImage srcImg){
+		controller.updateSrcImage(srcImg);
+		
+	}
+	
 	
 	public int getPatchWidth(){
 		return controller.getPatchWidth();
@@ -96,6 +101,18 @@ public class MainView implements IMyView {
 		return controller.getPatchHeight();
 	}
 	
+	
+	public int getSrcImgWidth(){
+		return controller.getSrcImgWidth();
+	}
+	
+	public int getSrcImgHeight(){
+		return controller.getSrcImgHeight();
+	}
+	
+	public SrcImage getSrcImg(){
+		return controller.getSrcImage();
+	}
 	
 	
 

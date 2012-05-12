@@ -19,13 +19,13 @@ public class MainController implements IMyController {
 	private ISFTModel sftModel;
 	
 	
-	private SrcImage filterImage; 
+	private SrcImage srcImg; 
 	
 	
 	
 	public void triggerFiltering(Coordinate2D centerCoord){
 		
-		filterBankModel.doFiltering(filterImage.getSpectrum(), centerCoord);
+		filterBankModel.doFiltering(srcImg.getSpectrum(), centerCoord);
 		
 		filterBankModel.printCurrentResult();
 		
@@ -37,7 +37,7 @@ public class MainController implements IMyController {
 	public void triggerShapeEstimation(Coordinate2D coordA, Coordinate2D coordB) {
 		
 		
-		double[] anglesEstimated = sftModel.doShapeEstimation(filterBankModel, filterImage.getSpectrum(), coordA, coordB);
+		double[] anglesEstimated = sftModel.doShapeEstimation(filterBankModel, srcImg.getSpectrum(), coordA, coordB);
 		
 		appendNormalNeedle(anglesEstimated[0], anglesEstimated[1]);
 	}
@@ -45,7 +45,7 @@ public class MainController implements IMyController {
 	public void triggerShapeEstimationEnergy(Coordinate2D coordA, Coordinate2D coordB) {
 		
 		
-		double[] anglesEstimated = sftModel.doShapeEstimationEnergy(filterBankModel, filterImage.getSpectrum(), coordA, coordB);
+		double[] anglesEstimated = sftModel.doShapeEstimationEnergy(filterBankModel, srcImg.getSpectrum(), coordA, coordB);
 		
 		appendNormalNeedle(anglesEstimated[0], anglesEstimated[1]);
 	}
@@ -64,6 +64,11 @@ public class MainController implements IMyController {
 		
 	}
 	
+	
+	
+	public void updateSrcImage(SrcImage srcImg){
+		this.srcImg = srcImg;
+	}
 	
 	public void setView(IMyView view) {
 		
@@ -97,7 +102,7 @@ public class MainController implements IMyController {
 	
 	private void initModel(){
 		
-		filterImage = new SrcImage("test/5_s30t250.bmp");
+		this.srcImg = new SrcImage("test/5_s30t250.bmp");
 		
 		
 		filterBankModel.init();
@@ -136,9 +141,17 @@ public class MainController implements IMyController {
 	public SrcImage getSrcImage() {
 		// TODO Auto-generated method stub
 		
-		return filterImage;
+		return srcImg;
 	}
 
+	
+	public int getSrcImgWidth(){
+		return srcImg.getWidth();
+	}
+	
+	public int getSrcImgHeight(){
+		return srcImg.getHeight();
+	}
 	
 	public int getPatchWidth() {
 		// TODO Auto-generated method stub

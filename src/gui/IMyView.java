@@ -1,6 +1,7 @@
 package gui;
 
 import mathUtil.Coordinate2D;
+import model.SrcImage;
 import controller.IMyController;
 
 public interface IMyView {
@@ -14,6 +15,15 @@ public interface IMyView {
 	public int getPatchWidth();
 
 	public int getPatchHeight();
+	
+	public int getSrcImgWidth();
+	
+	public int getSrcImgHeight();
+	
+	public SrcImage getSrcImg();
+	
+	public void updateSrcImg(SrcImage srcImg);
+	
 	
 //	public void patchSelected(Coordinate2D coord);
 	

@@ -71,7 +71,7 @@ public class SrcImage {
 	
 	
 	
-	public BufferedImage getSrcImg(){
+	public BufferedImage getBufferedImg(){
 		return srcImg;
 	}
 
