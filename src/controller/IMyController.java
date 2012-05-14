@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import mathUtil.Coordinate2D;
 import model.IFilterBankModel;
 import model.ISFTModel;
+import model.Orientation;
 import model.SrcImage;
 import gui.IMyView;
 
@@ -29,7 +30,7 @@ public interface IMyController {
 	
 	public void updateModel();
 	
-	public void appendNormalNeedle(double slant, double tilt);
+//	public void appendNormalNeedle(Orientation orientationEstimated);
 	
 	
 	public SrcImage getSrcImage();
@@ -45,7 +46,7 @@ public interface IMyController {
 	
 	public void triggerFiltering(Coordinate2D centerCoord);
 	
-	public void triggerShapeEstimation(Coordinate2D coordA, Coordinate2D coordB);
+	public Orientation triggerShapeEstimation(Coordinate2D coordA, Coordinate2D coordB);
 	
-	public void triggerShapeEstimationEnergy(Coordinate2D coordA, Coordinate2D coordB);
+	public Orientation triggerShapeEstimationEnergy(Coordinate2D coordA, Coordinate2D coordB);
 }

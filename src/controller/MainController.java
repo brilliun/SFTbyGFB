@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import gui.IMyView;
 import mathUtil.Coordinate2D;
 import model.ISFTModel;
+import model.Orientation;
 import model.SrcImage;
 import model.IFilterBankModel;
 
@@ -34,33 +35,19 @@ public class MainController implements IMyController {
 	
 
 	
-	public void triggerShapeEstimation(Coordinate2D coordA, Coordinate2D coordB) {
+	public Orientation triggerShapeEstimation(Coordinate2D coordA, Coordinate2D coordB) {
 		
-		
-		double[] anglesEstimated = sftModel.doShapeEstimation(filterBankModel, srcImg.getSpectrum(), coordA, coordB);
-		
-		appendNormalNeedle(anglesEstimated[0], anglesEstimated[1]);
-	}
-	
-	public void triggerShapeEstimationEnergy(Coordinate2D coordA, Coordinate2D coordB) {
-		
-		
-		double[] anglesEstimated = sftModel.doShapeEstimationEnergy(filterBankModel, srcImg.getSpectrum(), coordA, coordB);
-		
-		appendNormalNeedle(anglesEstimated[0], anglesEstimated[1]);
-	}
-	
-	
-	public void triggerSlantTiltMap(Coordinate2D startCoord, int rangeX, int rangeY){
-		
-		
+		return sftModel.doShapeEstimation(filterBankModel, srcImg.getSpectrum(), coordA, coordB);
 		
 	}
 	
 	
-	public void appendNormalNeedle(double slant, double tilt){
+	
+	public Orientation triggerShapeEstimationEnergy(Coordinate2D coordA, Coordinate2D coordB) {
 		
-		mainView.addNormalNeedle(slant, tilt);
+		
+		return sftModel.doShapeEstimationEnergy(filterBankModel, srcImg.getSpectrum(), coordA, coordB);
+		
 		
 	}
 	

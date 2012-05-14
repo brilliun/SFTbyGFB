@@ -204,7 +204,7 @@ public class FilterBankModel implements IFilterBankModel{
 
 	
 	
-	public double[] getCurrentResultConcurrent(){
+	public double[] getFilterResultConcurrent(){
 		
 		double[] results = new double[ORIENTATIONS];
 		
@@ -247,7 +247,7 @@ public class FilterBankModel implements IFilterBankModel{
 		
 	}
 	
-	public double[] getCurrentResultConcurrentEnergy(){
+	public double[] getFilterResultConcurrentEnergy(){
 		
 		double[] results = new double[ORIENTATIONS];
 		
@@ -327,7 +327,7 @@ public class FilterBankModel implements IFilterBankModel{
 		entireFilterBank = new FilterBank();
 		
 		
-		int threadIndex;
+//		int threadIndex;
 		int subOrientNum = ORIENTATIONS / NUM_FILTERBANK_THREADS;
 		
 //		FilterBankCallable[] filterBankCallables = new FilterBankCallable[NUM_FILTERBANK_THREADS];
@@ -480,7 +480,7 @@ public class FilterBankModel implements IFilterBankModel{
 			
 			FilterBank subGroupFilterBank = new FilterBank();
 			
-			
+
 			filterBankCallableEnergy.setFilterBank(subGroupFilterBank);
 			
 			

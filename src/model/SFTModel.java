@@ -47,44 +47,43 @@ public class SFTModel implements ISFTModel{
 	
 	
 	
-	public double[] doShapeEstimation(IFilterBankModel filterBankModel, Spectrum srcImg, Coordinate2D pointA, Coordinate2D pointB){
+	public Orientation doShapeEstimation(IFilterBankModel filterBankModel, Spectrum srcImg, Coordinate2D pointA, Coordinate2D pointB){
 		
 		filterBankModel.doFilteringConcurrent(srcImg, pointA);
 		
-		double[] responseA = filterBankModel.getCurrentResultConcurrent();
+		double[] responseA = filterBankModel.getFilterResultConcurrent();
 		
 		filterBankModel.doFilteringConcurrent(srcImg, pointB);
 		
-		double[] responseB = filterBankModel.getCurrentResultConcurrent();
+		double[] responseB = filterBankModel.getFilterResultConcurrent();
 		
 		
-		double[] anglesEstimated = shapeEstimation.estimateShape(responseA, responseB, pointA.shiftedCoord(), pointB.shiftedCoord());  
+		Orientation estimatedOrientation = shapeEstimation.estimateShape(responseA, responseB, pointA.shiftedCoord(), pointB.shiftedCoord());  
 		
-		System.out.println("slant = " + anglesEstimated[0]);
+		System.out.println(estimatedOrientation.toString());
 		
-		System.out.println("tilt = " + anglesEstimated[1]);
 		
-		return anglesEstimated;
+		return estimatedOrientation;
 	}
 	
-	public double[] doShapeEstimationEnergy(IFilterBankModel filterBankModel, Spectrum srcImg, Coordinate2D pointA, Coordinate2D pointB){
+	public Orientation doShapeEstimationEnergy(IFilterBankModel filterBankModel, Spectrum srcImg, Coordinate2D pointA, Coordinate2D pointB){
 		
 		filterBankModel.doFilteringConcurrentEnergy(srcImg, pointA);
 		
-		double[] responseA = filterBankModel.getCurrentResultConcurrentEnergy();
+		double[] responseA = filterBankModel.getFilterResultConcurrentEnergy();
 		
 		filterBankModel.doFilteringConcurrentEnergy(srcImg, pointB);
 		
-		double[] responseB = filterBankModel.getCurrentResultConcurrentEnergy();
+		double[] responseB = filterBankModel.getFilterResultConcurrentEnergy();
 		
 		
-		double[] anglesEstimated = shapeEstimation.estimateShapeEnergy(responseA, responseB, pointA.shiftedCoord(), pointB.shiftedCoord());  
+		Orientation estimatedOrientation = shapeEstimation.estimateShapeEnergy(responseA, responseB, pointA.shiftedCoord(), pointB.shiftedCoord());  
 		
-		System.out.println("slant = " + anglesEstimated[0]);
 		
-		System.out.println("tilt = " + anglesEstimated[1]);
+		System.out.println(estimatedOrientation.toString());
 		
-		return anglesEstimated;
+		
+		return estimatedOrientation;
 	}
 	
 	

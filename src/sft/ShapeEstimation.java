@@ -1,6 +1,7 @@
 package sft;
 
 import mathUtil.Coordinate2D;
+import model.Orientation;
 import static java.lang.Math.*;
 
 public class ShapeEstimation {
@@ -17,7 +18,7 @@ public class ShapeEstimation {
 	}
 	
 	
-	public double[] estimateShape(double[] responseA, double[] responseB, Coordinate2D pointA, Coordinate2D pointB){
+	public Orientation estimateShape(double[] responseA, double[] responseB, Coordinate2D pointA, Coordinate2D pointB){
 		
 		
 		double slantEstimatedD = 0.0;
@@ -73,14 +74,16 @@ public class ShapeEstimation {
 			}
 			
 			
-		double[] resultAngles = {slantEstimatedD, tiltEstimatedD};
 		
-		return resultAngles;
+		
+		return Orientation.orientationInDegree(slantEstimatedD, tiltEstimatedD);
+		
+		
 		
 		
 	}
 
-	public double[] estimateShapeEnergy(double[] responseA, double[] responseB, Coordinate2D pointA, Coordinate2D pointB){
+	public Orientation estimateShapeEnergy(double[] responseA, double[] responseB, Coordinate2D pointA, Coordinate2D pointB){
 		
 		
 		double slantEstimatedD = 0.0;
@@ -136,9 +139,7 @@ public class ShapeEstimation {
 			}
 			
 			
-		double[] resultAngles = {slantEstimatedD, tiltEstimatedD};
-		
-		return resultAngles;
+		return Orientation.orientationInDegree(slantEstimatedD, tiltEstimatedD);
 		
 		
 	}

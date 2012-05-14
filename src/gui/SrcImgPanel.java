@@ -12,11 +12,14 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.JPanel;
 
 import mathUtil.Coordinate2D;
+import model.Orientation;
 import model.SrcImage;
 
 
@@ -82,11 +85,9 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 	private int active;
 	
 	
-	private LinkedList<double[]> angles;
+	private LinkedList<Orientation> estimatedOrientations;
 	
-	private LinkedList<double[]> angleBuf;
-	
-	private LinkedList<int[]> positions;
+	private LinkedList<Coordinate2D> estimatedPositions;
 	
 	private LinkedList<Color> needleColor;
 	
@@ -215,19 +216,19 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 			
 		}
 		
-		else if(e.getKeyChar() == 'z'){ // estimate the orientation by four pairs of patches around 9 center points
-			
-			System.out.println("Zhankai");
-			if(centerPicked){
-
-				double[] avgAngle = estimateGrid(GRID_GAP);
-				
-				
-				System.out.println(avgAngle[0]);
-				System.out.println(avgAngle[1]);
-			}
-			
-		}
+//		else if(e.getKeyChar() == 'z'){ // estimate the orientation by four pairs of patches around 9 center points
+//			
+//			System.out.println("Zhankai");
+//			if(centerPicked){
+//
+//				double[] avgAngle = estimateGrid(GRID_GAP);
+//				
+//				
+//				System.out.println(avgAngle[0]);
+//				System.out.println(avgAngle[1]);
+//			}
+//			
+//		}
 	
 		else if(e.getKeyChar() == 'p'){ // pre-processing of the target image
 			
@@ -341,52 +342,54 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 	}
 	
 	
-	private double[] estimateGrid(int gridGap){
-		
-		int centerX = centerCoord.getX();
-		int centerY = centerCoord.getY();
-		
-		double slantAll = 0;
-		double tiltAll = 0;
-		
-		LinkedList<double[]> resultList = new LinkedList<double[]>();
-		
-		System.out.println("#1");
-		resultList.add(estimateSingle(centerX, centerY)); //#1
-		System.out.println("#2");
-		resultList.add(estimateSingle(centerX - gridGap, centerY)); //#2
-		System.out.println("#3");
-		resultList.add(estimateSingle(centerX + gridGap, centerY)); //#3
-		System.out.println("#4");
-		resultList.add(estimateSingle(centerX, centerY - gridGap)); //#4
-		System.out.println("#5");
-		resultList.add(estimateSingle(centerX, centerY + gridGap)); //#5
-		System.out.println("#6");
-		resultList.add(estimateSingle(centerX - gridGap, centerY - gridGap)); //#6
-		System.out.println("#7");
-		resultList.add(estimateSingle(centerX + gridGap, centerY - gridGap)); //#7
-		System.out.println("#8");
-		resultList.add(estimateSingle(centerX - gridGap, centerY + gridGap)); //#8
-		System.out.println("#9");
-		resultList.add(estimateSingle(centerX + gridGap, centerY + gridGap)); //#9
-		
-		for(int i = 0; i < resultList.size(); i++){
-			double[] result = resultList.get(i);
-			
-			slantAll += result[0];
-			tiltAll += result[1];
-			
-			
-		}
-		
-		double[] avgAngle = {slantAll/resultList.size(), tiltAll/resultList.size()};
-		
-		return avgAngle;
-		
-	}
+//	private void estimateGrid(int gridGap){
+//		
+//		int centerX = centerCoord.getX();
+//		int centerY = centerCoord.getY();
+//		
+//		double slantAll = 0;
+//		double tiltAll = 0;
+//		
+//		LinkedList<double[]> resultList = new LinkedList<double[]>();
+//		
+//		System.out.println("#1");
+//		resultList.add(estimateSingle(centerX, centerY)); //#1
+//		System.out.println("#2");
+//		resultList.add(estimateSingle(centerX - gridGap, centerY)); //#2
+//		System.out.println("#3");
+//		resultList.add(estimateSingle(centerX + gridGap, centerY)); //#3
+//		System.out.println("#4");
+//		resultList.add(estimateSingle(centerX, centerY - gridGap)); //#4
+//		System.out.println("#5");
+//		resultList.add(estimateSingle(centerX, centerY + gridGap)); //#5
+//		System.out.println("#6");
+//		resultList.add(estimateSingle(centerX - gridGap, centerY - gridGap)); //#6
+//		System.out.println("#7");
+//		resultList.add(estimateSingle(centerX + gridGap, centerY - gridGap)); //#7
+//		System.out.println("#8");
+//		resultList.add(estimateSingle(centerX - gridGap, centerY + gridGap)); //#8
+//		System.out.println("#9");
+//		resultList.add(estimateSingle(centerX + gridGap, centerY + gridGap)); //#9
+//		
+//		for(int i = 0; i < resultList.size(); i++){
+//			double[] result = resultList.get(i);
+//			
+//			slantAll += result[0];
+//			tiltAll += result[1];
+//			
+//			
+//		}
+//		
+//		double[] avgAngle = {slantAll/resultList.size(), tiltAll/resultList.size()};
+//		
+//		
+//	}
 	
 	
-	private double[] estimateSingle(int centerX, int centerY){
+	private void estimateSingle(int centerX, int centerY){
+		
+		
+		LinkedList<Orientation> resultOrientationList = new LinkedList<Orientation>();
 		
 
 		//Diagonal
@@ -399,7 +402,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 
 //		needleColor.add(Color.GREEN);
 		
-		mainView.shapeEstimate(new Coordinate2D(topLeftX, topLeftY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()), new Coordinate2D(bottomRightX, bottomRightY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()));
+		resultOrientationList.add(mainView.shapeEstimate(new Coordinate2D(topLeftX, topLeftY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()), new Coordinate2D(bottomRightX, bottomRightY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight())));
 		
 		
 		int topRightX = centerX + patchWidth/2;
@@ -410,7 +413,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 				
 //		needleColor.add(Color.GREEN);
 		
-		mainView.shapeEstimate(new Coordinate2D(topRightX, topRightY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()), new Coordinate2D(bottomLeftX, bottomLeftY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()));
+		resultOrientationList.add(mainView.shapeEstimate(new Coordinate2D(topRightX, topRightY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()), new Coordinate2D(bottomLeftX, bottomLeftY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight())));
 		
 		
 		
@@ -424,7 +427,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 
 //		needleColor.add(Color.GREEN);
 		
-		mainView.shapeEstimate(new Coordinate2D(leftX, leftY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()), new Coordinate2D(rightX, rightY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()));
+		resultOrientationList.add(mainView.shapeEstimate(new Coordinate2D(leftX, leftY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()), new Coordinate2D(rightX, rightY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight())));
 		
 		
 		int topX = centerX;
@@ -435,42 +438,29 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 				
 //		needleColor.add(Color.GREEN);
 		
-		mainView.shapeEstimate(new Coordinate2D(topX, topY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()), new Coordinate2D(bottomX, bottomY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()));
+		resultOrientationList.add(mainView.shapeEstimate(new Coordinate2D(topX, topY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()), new Coordinate2D(bottomX, bottomY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight())));
 		
-		double slantAll = 0;
-		double tiltAll = 0;
 		
-		for(int i = 0; i < angleBuf.size(); i++){
-			
-			double[] angle = angleBuf.get(i);
-			
-			slantAll += angle[0];
-			tiltAll += angle[1];
-			
-		}
-		double[] avgAngle = {slantAll/angleBuf.size(), tiltAll/angleBuf.size()};
 		
-		System.out.println("Single Avg: slant = " + avgAngle[0] + ", tilt = " + avgAngle[1]);
+		Orientation avgOrient = avgOrientation(resultOrientationList);
+		
+		System.out.println("Single Avg: slant = " + avgOrient.getSlantD() + ", tilt = " + avgOrient.getTiltD());
 		
 
 		
-		angleBuf.clear();
+		estimatedOrientations.add(avgOrient);
 		
-		angles.add(avgAngle);
-		
-		int[] position = {centerCoord.getX(), centerCoord.getY()};
-		
-		positions.add(position);
+		estimatedPositions.add(centerCoord);
 		
 		needleColor.add(Color.GREEN);
 		
-		return avgAngle;
 	}
 	
 
-	private double[] estimateSingleEnergy(int centerX, int centerY){
+	private void estimateSingleEnergy(int centerX, int centerY){
 		
-
+		LinkedList<Orientation> resultOrientationList = new LinkedList<Orientation>();
+		
 		//Diagonal
 		int topLeftX = centerX - patchWidth/2;
 		int topLeftY = centerY - patchHeight/2;
@@ -481,7 +471,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 
 //		needleColor.add(Color.GREEN);
 		
-		mainView.shapeEstimateEnergy(new Coordinate2D(topLeftX, topLeftY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()), new Coordinate2D(bottomRightX, bottomRightY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()));
+		resultOrientationList.add(mainView.shapeEstimateEnergy(new Coordinate2D(topLeftX, topLeftY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()), new Coordinate2D(bottomRightX, bottomRightY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight())));
 		
 		
 		int topRightX = centerX + patchWidth/2;
@@ -492,7 +482,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 				
 //		needleColor.add(Color.GREEN);
 		
-		mainView.shapeEstimateEnergy(new Coordinate2D(topRightX, topRightY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()), new Coordinate2D(bottomLeftX, bottomLeftY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()));
+		resultOrientationList.add(mainView.shapeEstimateEnergy(new Coordinate2D(topRightX, topRightY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()), new Coordinate2D(bottomLeftX, bottomLeftY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight())));
 		
 		
 		
@@ -506,7 +496,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 
 //		needleColor.add(Color.GREEN);
 		
-		mainView.shapeEstimateEnergy(new Coordinate2D(leftX, leftY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()), new Coordinate2D(rightX, rightY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()));
+		resultOrientationList.add(mainView.shapeEstimateEnergy(new Coordinate2D(leftX, leftY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()), new Coordinate2D(rightX, rightY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight())));
 		
 		
 		int topX = centerX;
@@ -517,49 +507,24 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 				
 //		needleColor.add(Color.GREEN);
 		
-		mainView.shapeEstimateEnergy(new Coordinate2D(topX, topY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()), new Coordinate2D(bottomX, bottomY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()));
+		resultOrientationList.add(mainView.shapeEstimateEnergy(new Coordinate2D(topX, topY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()), new Coordinate2D(bottomX, bottomY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight())));
 		
-		double slantAll = 0;
-		double tiltAll = 0;
 		
-		for(int i = 0; i < angleBuf.size(); i++){
-			
-			double[] angle = angleBuf.get(i);
-			
-			slantAll += angle[0];
-			tiltAll += angle[1];
-			
-		}
-		double[] avgAngle = {slantAll/angleBuf.size(), tiltAll/angleBuf.size()};
 		
-		System.out.println("Energy Avg: slant = " + avgAngle[0] + ", tilt = " + avgAngle[1]);
+		Orientation avgOrient = avgOrientation(resultOrientationList);
 		
-		angleBuf.clear();
+		System.out.println("Energy Avg: slant = " + avgOrient.getSlantD() + ", tilt = " + avgOrient.getTiltD());
+	
 		
-		angles.add(avgAngle);
+		estimatedOrientations.add(avgOrient);
 		
-		int[] position = {centerCoord.getX(), centerCoord.getY()};
-		
-		positions.add(position);
+		estimatedPositions.add(centerCoord);
 		
 		needleColor.add(Color.YELLOW);
 		
-		return avgAngle;
 	}
 	
 	
-	public void attatchNormalNeedle(double slant, double tilt){
-		
-		double[] estimatedAngles = {slant, tilt}; 
-		
-		angleBuf.add(estimatedAngles);
-		
-//		int[] position = {centerCoord.getX(), centerCoord.getY()};
-//		
-//		positions.add(position);
-		
-//		this.repaint();
-	}
 	
 	
 	
@@ -614,29 +579,27 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 		
 		if(!centerPicked)
 			return;
+		
 		((Graphics2D)g).setStroke(new BasicStroke(3.0f));
 		
-		for(int i = 0; i < angles.size(); i++){
-			
-			int[] position = positions.get(i); 
 		
-			double[] angle = angles.get(i);
+		for(int i = 0; i < estimatedOrientations.size(); i++){
 			
-			double slant = Math.toRadians(angle[0]);
-			
-			double tilt = Math.toRadians(angle[1]);
-			
-			
-			int x1 = position[0];
-			
-			int y1 = position[1];
+			Coordinate2D position = estimatedPositions.get(i); 
+		
+			Orientation orient = estimatedOrientations.get(i);
 			
 			
+			int x1 = position.getX();
+			
+			int y1 = position.getY();
 			
 			
-			int x2 = (int) Math.round(x1 + NEEDLE_LENGTH * Math.sin(slant) * Math.cos(tilt));
 			
-			int y2 = (int) Math.round(y1 - NEEDLE_LENGTH * Math.sin(slant) * Math.sin(tilt));
+			
+			int x2 = (int) Math.round(x1 + NEEDLE_LENGTH * Math.sin(orient.getSlantR()) * Math.cos(orient.getTiltR()));
+			
+			int y2 = (int) Math.round(y1 - NEEDLE_LENGTH * Math.sin(orient.getSlantR()) * Math.sin(orient.getTiltR()));
 			
 			g.setColor(needleColor.get(i));
 			
@@ -649,7 +612,6 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 			
 			
 		}
-		System.out.println("Center" + centerCoord.toString());
 		
 	}
 	
@@ -688,6 +650,29 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
         }
 		
 	}
+	
+	
+	
+	private Orientation avgOrientation(List<Orientation> orientationList){
+		
+		double sumSlantD = 0.0;
+		double sumTiltD = 0.0;
+		
+		Iterator<Orientation> iter = orientationList.iterator();
+		
+		while(iter.hasNext()){
+			Orientation currentOrient = iter.next();
+			
+			sumSlantD += currentOrient.getSlantD();
+			sumTiltD += currentOrient.getTiltD();
+		}
+		
+		
+		return Orientation.orientationInDegree(sumSlantD / orientationList.size(), sumTiltD / orientationList.size());
+		
+	}
+	
+	
 	
 	
 	private void moveCoordinate(Coordinate2D activeCoord, int direction, int step){
@@ -739,11 +724,10 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 		latterCoord = new Coordinate2D();
 		centerCoord = new Coordinate2D();
 		
-		angles = new LinkedList<double[]>();
+		estimatedOrientations = new LinkedList<Orientation>();
 		
-		angleBuf = new LinkedList<double[]>();
 		
-		positions = new LinkedList<int[]>();
+		estimatedPositions = new LinkedList<Coordinate2D>();
 		
 		needleColor = new LinkedList<Color>();
 		

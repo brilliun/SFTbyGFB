@@ -13,8 +13,8 @@ public interface ISFTModel {
 	
 	public void init();
 	
-	public double[] doShapeEstimation(IFilterBankModel filterBankModel, Spectrum srcImg, Coordinate2D coordA, Coordinate2D coordB);
+	public Orientation doShapeEstimation(IFilterBankModel filterBankModel, Spectrum srcImg, Coordinate2D coordA, Coordinate2D coordB);
 	
-	public double[] doShapeEstimationEnergy(IFilterBankModel filterBankModel, Spectrum srcImg, Coordinate2D coordA, Coordinate2D coordB);
+	public Orientation doShapeEstimationEnergy(IFilterBankModel filterBankModel, Spectrum srcImg, Coordinate2D coordA, Coordinate2D coordB);
 
 }

@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
 
 import mathUtil.Coordinate2D;
+import model.Orientation;
 import model.SrcImage;
 
 
@@ -65,7 +66,9 @@ public class MainView implements IMyView {
 		
 		SrcImage srcImg = controller.getSrcImage();
 		
-//		srcImgPanel = new SrcImgPanel(srcImg);
+		
+		
+		srcImgPanel = new SrcImgPanel();
 		
 		srcImgPanel.setMainView(this);
 		
@@ -130,20 +133,17 @@ public class MainView implements IMyView {
 
 
 	
-	public void shapeEstimate(Coordinate2D coordA, Coordinate2D coordB) {
+	public Orientation shapeEstimate(Coordinate2D coordA, Coordinate2D coordB) {
 		
-		controller.triggerShapeEstimation(coordA, coordB);
-		
-	}
-	
-	public void shapeEstimateEnergy(Coordinate2D coordA, Coordinate2D coordB) {
-		
-		controller.triggerShapeEstimationEnergy(coordA, coordB);
+		return controller.triggerShapeEstimation(coordA, coordB);
 		
 	}
 	
-	public void addNormalNeedle(double slant, double tilt){
-		srcImgPanel.attatchNormalNeedle(slant, tilt);
+	public Orientation shapeEstimateEnergy(Coordinate2D coordA, Coordinate2D coordB) {
+		
+		return controller.triggerShapeEstimationEnergy(coordA, coordB);
+		
 	}
+	
 	
 }

@@ -30,7 +30,7 @@ public interface IFilterBankModel {
 	
 	public double[] getCurrentResult();
 	
-	public double[] getCurrentResultConcurrent();
+	public double[] getFilterResultConcurrent();
 	
-	public double[] getCurrentResultConcurrentEnergy();
+	public double[] getFilterResultConcurrentEnergy();
 }
