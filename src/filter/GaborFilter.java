@@ -117,43 +117,39 @@ public class GaborFilter implements IFilter{
 	
 
 	
-	public Complex patchConvolve(Spectrum inputImg, int centerX, int centerY, int patchSize, int edgeAction){
+	public Complex patchConvolve(Spectrum inputImg, int centerX, int centerY, int patchWidth, int patchHeight, int edgeAction){
 		
-		int shift;
+	
 		
-		if(patchSize <= 1)
+		if(patchWidth <= 1 && patchHeight <= 1)
 			return pointConvolve(inputImg, centerX, centerY, edgeAction);
-		else if(patchSize % 2 == 0)
-			shift = patchSize / 2 - 1;
-		else
-			shift = (patchSize - 1) / 2;
 		
-		return patchConvolve(inputImg, centerX - shift, centerY - shift, patchSize, patchSize, edgeAction);
+		int shiftX = patchWidth % 2 == 0 ? patchWidth/ 2 - 1 : (patchWidth- 1) / 2;  
 		
-	}
-	
-	
-	
-	public Complex patchConvolve(Spectrum inputImg, int startX, int startY, int width, int height, int edgeAction){
+		int shiftY = patchHeight% 2 == 0 ? patchHeight/ 2 - 1 : (patchHeight - 1) / 2;
+		
+		int startX = centerX - shiftX;
+		
+		int startY = centerY - shiftY;
 		
 		
 		Complex response = new Complex();
 		
-		int endX = startX + width;
-		int endY = startY + height;
 		
-		for(int x = startX; x < endX; x++){
-			for(int y = startY; y < endY; y++){
+		for(int countX = 0; countX < patchWidth; countX++){
+			for(int countY = 0; countY < patchHeight; countY++){
 				
-				response = response.add(pointConvolve(inputImg, x, y, edgeAction));// * gaussianFunction(x - 16.5, y - 16.5);
-				
+				response = response.add(pointConvolve(inputImg, startX + countX, startY + countY, patchWidth, patchHeight, edgeAction));
 				
 			}
 		}
 		
-		return response;
+		
+		return patchConvolve(inputImg, centerX - shiftX, centerY - shiftY, patchWidth, patchHeight, edgeAction);
 		
 	}
+	
+	
 	
 	public double patchConvolveEnergy(Spectrum inputImg, int startX, int startY, int width, int height, int edgeAction){
 		
