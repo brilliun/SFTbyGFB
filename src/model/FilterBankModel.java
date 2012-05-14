@@ -57,7 +57,7 @@ public class FilterBankModel implements IFilterBankModel{
 	
 	private FilterBank entireFilterBankEnergy;
 	
-	private LinkedHashMap<IFilter, Complex> resultMap;
+	private LinkedHashMap<IFilter, Double> resultMap;
 	
 	
 	
@@ -186,15 +186,15 @@ public class FilterBankModel implements IFilterBankModel{
 		double[] result = new double[resultSize];
 		
 		
-		Iterator<Entry<IFilter, Complex>> iter = resultMap.entrySet().iterator();
+		Iterator<Entry<IFilter, Double>> iter = resultMap.entrySet().iterator();
 		
 		int idx = 0;
 		
 		while(iter.hasNext()){
 			
-			Entry<IFilter, Complex> resultEntry = iter.next();
+			Entry<IFilter, Double> resultEntry = iter.next();
 		
-			result[idx++] = resultEntry.getValue().getAmplitude(); 
+			result[idx++] = resultEntry.getValue(); 
 			
 			
 		}	
@@ -292,16 +292,16 @@ public class FilterBankModel implements IFilterBankModel{
 	
 	public void printCurrentResult(){
 		
-		Iterator<Entry<IFilter, Complex>> iter = resultMap.entrySet().iterator();
+		Iterator<Entry<IFilter, Double>> iter = resultMap.entrySet().iterator();
 		
 		StringBuilder stringBd = new StringBuilder();
 		
 		while(iter.hasNext()){
 			
-			Entry<IFilter, Complex> resultEntry = iter.next();
+			Entry<IFilter, Double> resultEntry = iter.next();
 			
 //			stringBd.append(resultEntry.getKey().getTag() + ": ");
-			stringBd.append(resultEntry.getValue().getAmplitude() + ", ");
+			stringBd.append(resultEntry.getValue() + ", ");
 			
 		}
 		

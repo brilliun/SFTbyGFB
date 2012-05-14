@@ -11,7 +11,7 @@ public class FilterBankCallableEnergy implements Callable<LinkedHashMap>{
 	
 	private FilterBank filterBank;
 	
-	private LinkedHashMap<IFilter, Double> resultMap;
+//	private LinkedHashMap<IFilter, Double> resultMap;
 	
 	private int id; 
 	
@@ -38,7 +38,7 @@ public class FilterBankCallableEnergy implements Callable<LinkedHashMap>{
 		
 		this.id = id;
 //		this.filterBanks = new LinkedList<FilterBank>();
-		this.resultMap = new LinkedHashMap<IFilter, Double>();
+//		this.resultMap = new LinkedHashMap<IFilter, Double>();
 		
 	}
 

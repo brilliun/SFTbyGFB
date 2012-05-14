@@ -78,19 +78,19 @@ public class FilterBank implements IFilter{
 		return totalResponse;
 	}
 	
-	public LinkedHashMap<IFilter, Complex> patchConvolveResultMap(Spectrum srcImg, int posX, int posY, int patchWidth, int patchHeight, int edgeAction){
+	public LinkedHashMap<IFilter, Double> patchConvolveResultMap(Spectrum srcImg, int posX, int posY, int patchWidth, int patchHeight, int edgeAction){
 		
 		
-		LinkedHashMap<IFilter, Complex> resultMap = new LinkedHashMap<IFilter, Complex>();
+		LinkedHashMap<IFilter, Double> resultMap = new LinkedHashMap<IFilter, Double>();
 		
 		Iterator<IFilter> iter = filterBank.iterator();
-		Complex response = new Complex();
+		double response = 0.0;
 		
 		while(iter.hasNext()){
 			
 			IFilter filter = iter.next();
 			
-			response = filter.patchConvolve(srcImg, posX, posY, patchWidth, patchHeight, edgeAction);
+			response = filter.patchConvolve(srcImg, posX, posY, patchWidth, patchHeight, edgeAction).getAmplitude();
 			
 			resultMap.put(filter, response);
 			

@@ -14,7 +14,7 @@ public class FilterBankCallable implements Callable<LinkedHashMap>{
 	
 	private FilterBank filterBank;
 	
-	private LinkedHashMap<IFilter, Double> resultMap;
+//	private LinkedHashMap<IFilter, Double> resultMap;
 	
 	private int id; 
 	
@@ -41,7 +41,7 @@ public class FilterBankCallable implements Callable<LinkedHashMap>{
 		
 		this.id = id;
 //		this.filterBanks = new LinkedList<FilterBank>();
-		this.resultMap = new LinkedHashMap<IFilter, Double>();
+//		this.resultMap = new LinkedHashMap<IFilter, Double>();
 		
 	}
 
@@ -67,7 +67,7 @@ public class FilterBankCallable implements Callable<LinkedHashMap>{
 	}
 
 	
-	public LinkedHashMap<IFilter, Complex> call() throws Exception {
+	public LinkedHashMap<IFilter, Double> call() throws Exception {
 		// TODO Auto-generated method stub
 		
 		
