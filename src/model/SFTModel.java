@@ -15,6 +15,10 @@ public class SFTModel implements ISFTModel{
 	
 	private int dimension;
 	
+	private static int patchWidth = 32;
+	
+	private static int patchHeight = 32;
+	
 	
 	private IMyController controller;
 	
@@ -37,6 +41,14 @@ public class SFTModel implements ISFTModel{
 		
 	}
 	
+	
+	public int getPatchWidth(){
+		return patchWidth;
+	}
+	
+	public int getPatchHeight(){
+		return patchHeight;
+	}
 
 	
 	public void init() {

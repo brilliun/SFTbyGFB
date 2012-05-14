@@ -16,9 +16,6 @@ public interface IFilterBankModel {
 	
 	public void init();
 	
-	public int getPatchWidth();
-	
-	public int getPatchHeight();
 	
 	public int doFiltering(Spectrum srcImg, Coordinate2D coord);
 	

@@ -40,9 +40,7 @@ public class FilterBankModel implements IFilterBankModel{
 	
 	private LinkedList<FilterBankCallableEnergy> filterBankCallableEnergyList = new LinkedList<FilterBankCallableEnergy>();
 	
-	private static int patchWidth = 32;
 	
-	private static int patchHeight = 32;
 	
 	private static int kernelWidth = 64;
 	
@@ -91,13 +89,7 @@ public class FilterBankModel implements IFilterBankModel{
 	}
 	
 	
-	public int getPatchWidth(){
-		return patchWidth;
-	}
 	
-	public int getPatchHeight(){
-		return patchHeight;
-	}
 	
 	
 	
@@ -111,7 +103,7 @@ public class FilterBankModel implements IFilterBankModel{
 		
 		
 		
-		resultMap = entireFilterBank.patchConvolveResultMap(srcImg, coord.getX(), coord.getY(), patchWidth, patchHeight, 0);
+		resultMap = entireFilterBank.patchConvolveResultMap(srcImg, coord, controller.getPatchWidth(), controller.getPatchHeight(), IFilter.CONTINUOUS);
 		
 		
 		
@@ -134,7 +126,7 @@ public class FilterBankModel implements IFilterBankModel{
 		for(int i = 0; i < filterBankCallableList.size(); i++){
 			
 			FilterBankCallable filterBankCallable = filterBankCallableList.get(i);
-			filterBankCallable.setFilteringParams(srcImg, coord.getX(), coord.getY(), patchWidth, patchHeight, 0);
+			filterBankCallable.setFilteringParams(srcImg, coord, controller.getPatchWidth(), controller.getPatchHeight(), IFilter.CONTINUOUS);
 			
 			FutureTask<LinkedHashMap> futureTask = new FutureTask<LinkedHashMap>(filterBankCallable);
 			filterBankTasks.add(futureTask);
@@ -162,7 +154,7 @@ public class FilterBankModel implements IFilterBankModel{
 		for(int i = 0; i < filterBankCallableEnergyList.size(); i++){
 			
 			FilterBankCallableEnergy filterBankCallableEnergy = filterBankCallableEnergyList.get(i);
-			filterBankCallableEnergy.setFilteringParams(srcImg, coord.getX(), coord.getY(), patchWidth, patchHeight, 0);
+			filterBankCallableEnergy.setFilteringParams(srcImg, coord, controller.getPatchWidth(), controller.getPatchHeight(), IFilter.CONTINUOUS);
 			
 			FutureTask<LinkedHashMap> futureTask = new FutureTask<LinkedHashMap>(filterBankCallableEnergy);
 			filterBankEnergyTasks.add(futureTask);
@@ -221,13 +213,13 @@ public class FilterBankModel implements IFilterBankModel{
 			try {
 				LinkedHashMap subresultMap = filterBankTask.get();
 				
-				Iterator<Entry<IFilter, Complex>> resultIter = subresultMap.entrySet().iterator();
+				Iterator<Entry<IFilter, Double>> resultIter = subresultMap.entrySet().iterator();
 				
 				while(resultIter.hasNext()){
 					
-					Entry<IFilter, Complex> resultEntry = resultIter.next();
+					Entry<IFilter, Double> resultEntry = resultIter.next();
 					
-					results[idx++] = resultEntry.getValue().getAmplitude();
+					results[idx++] = resultEntry.getValue();
 					
 				}
 				

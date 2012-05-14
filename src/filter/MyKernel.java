@@ -128,13 +128,13 @@ public class MyKernel {
 	}
 
 	
-	public double getCoefficient(int col, int row){
+	public double getCoefficient(int x, int y){
 		
-		return data[row][col];
+		return data[x][y];
 	}
 	
-	public Complex getComplexCoefficient(int col, int row){
-		return complexData[row][col];
+	public Complex getComplexCoefficient(int x, int y){
+		return complexData[x][y];
 	}
 	
 	public int getWidth(){
@@ -146,11 +146,11 @@ public class MyKernel {
 	}
 	
 	public int getXOrigin(){
-		return (width - 1) / 2;
+		return width % 2 == 0 ? width / 2 : (width - 1) / 2;
 	}
 	
 	public int getYOrigin(){
-		return (height - 1) / 2;
+		return height % 2 == 0 ? height / 2 : (height - 1) / 2;
 	}
 	
 	public double[][] getKernelMatrix(){

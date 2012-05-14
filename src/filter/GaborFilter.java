@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 
 import mathUtil.Complex;
+import mathUtil.Coordinate2D;
 
 
 
@@ -51,7 +52,7 @@ public class GaborFilter implements IFilter{
 	
 	public void buildKernel(int width, int height){
 		
-		double[][][] coordinate = new double[height][width][2];
+		double[][][] coordinate = new double[width][height][2];
 		
 		double gap = 1.0;
 		
@@ -59,19 +60,19 @@ public class GaborFilter implements IFilter{
 			
 			for(int x = 0; x < width; x++){
 				
-				coordinate[y][x][0] = gap * (double)(x - width / 2);
-				coordinate[y][x][1] = gap * (double)(height / 2 - y);
+				coordinate[x][y][0] = gap * (double)(x - width / 2);
+				coordinate[x][y][1] = gap * (double)(height / 2 - y);
 			}
 		}
 		
 		
-		Complex[][] kernelMatrix = new Complex[height][width];
+		Complex[][] kernelMatrix = new Complex[width][height];
 		
 		for(int y = 0; y < height; y++){
 			
 			for(int x = 0; x < width; x++){
 								
-				kernelMatrix[y][x] = gaborFunction(coordinate[y][x][0], coordinate[y][x][1]);
+				kernelMatrix[x][y] = gaborFunction(coordinate[x][y][0], coordinate[x][y][1]);
 			
 				//System.out.print(kernelMatrix[y][x].getRe() + " , ");
 			}
@@ -117,86 +118,95 @@ public class GaborFilter implements IFilter{
 	
 
 	
-	public Complex patchConvolve(Spectrum inputImg, int centerX, int centerY, int patchWidth, int patchHeight, int edgeAction){
+	public double patchConvolve(Spectrum inputImg, Coordinate2D patchCenterCoord, int patchWidth, int patchHeight, int edgeAction){
 		
 	
 		
-		if(patchWidth <= 1 && patchHeight <= 1)
-			return pointConvolve(inputImg, centerX, centerY, edgeAction);
 		
 		int shiftX = patchWidth % 2 == 0 ? patchWidth/ 2 - 1 : (patchWidth- 1) / 2;  
 		
 		int shiftY = patchHeight% 2 == 0 ? patchHeight/ 2 - 1 : (patchHeight - 1) / 2;
 		
-		int startX = centerX - shiftX;
+		int startX = patchCenterCoord.getX() - shiftX;
 		
-		int startY = centerY - shiftY;
+		int startY = patchCenterCoord.getY() - shiftY;
 		
+
+		Coordinate2D topLeftCoord = new Coordinate2D(startX, startY);
 		
-		Complex response = new Complex();
+		Coordinate2D bottomRightCoord = new Coordinate2D(startX + patchWidth - 1, startY + patchHeight - 1);
+		
+		double response = 0.0;
 		
 		
 		for(int countX = 0; countX < patchWidth; countX++){
 			for(int countY = 0; countY < patchHeight; countY++){
 				
-				response = response.add(pointConvolve(inputImg, startX + countX, startY + countY, patchWidth, patchHeight, edgeAction));
+				response += dotProduct(inputImg, startX + countX, startY + countY, topLeftCoord, bottomRightCoord, edgeAction).getAmplitude();
 				
 			}
 		}
 		
-		
-		return patchConvolve(inputImg, centerX - shiftX, centerY - shiftY, patchWidth, patchHeight, edgeAction);
-		
-	}
-	
-	
-	
-	public double patchConvolveEnergy(Spectrum inputImg, int startX, int startY, int width, int height, int edgeAction){
-		
-		
-		double response = 0.0;
-		
-		int endX = startX + width;
-		int endY = startY + height;
-		
-		for(int x = startX; x < endX; x++){
-			for(int y = startY; y < endY; y++){
-				
-				response += pointConvolve(inputImg, x, y, edgeAction).getPower(); 
-				
-				
-				
-				
-			}
-		}
 		
 		return response;
 		
 	}
 	
 	
-	/*
-	public double dotProduct(Spectrum inputImg, int posX, int posY, int edgeAction){
+	
+	public double patchConvolveEnergy(Spectrum inputImg, Coordinate2D patchCenterCoord, int patchWidth, int patchHeight, int edgeAction){
 		
-		if(this.kernel == null){
-			System.out.println("No Kernel");
-			return 0;
+		
+		int shiftX = patchWidth % 2 == 0 ? patchWidth/ 2 - 1 : (patchWidth- 1) / 2;  
+		
+		int shiftY = patchHeight% 2 == 0 ? patchHeight/ 2 - 1 : (patchHeight - 1) / 2;
+		
+		int startX = patchCenterCoord.getX() - shiftX;
+		
+		int startY = patchCenterCoord.getY() - shiftY;
+		
+		
+		Coordinate2D topLeftCoord = new Coordinate2D(startX, startY);
+		
+		Coordinate2D bottomRightCoord = new Coordinate2D(startX + patchWidth - 1, startY + patchHeight - 1);
+		
+		double response = 0.0;
+		
+		
+		for(int countX = 0; countX < patchWidth; countX++){
+			for(int countY = 0; countY < patchHeight; countY++){
+				
+				response += dotProduct(inputImg, startX + countX, startY + countY, topLeftCoord, bottomRightCoord, edgeAction).getPower();
+				
+			}
 		}
 		
 		
-
-		double responseRe = 0;
-		double responseIm = 0;
+		return response;
 		
+		
+	}
+	
+	
+	
+	public Complex dotProduct(Spectrum inputImg, int posX, int posY, Coordinate2D topLeftCoord, Coordinate2D bottomRightCoord, int edgeAction){
+		
+		if(this.kernel == null){
+			System.out.println("No Kernel");
+			return new Complex();
+		}
+		
+		
+		Complex response = new Complex();
 		
 		int kernelWidth = kernel.getWidth();
 		
 		int kernelHeight = kernel.getHeight();
 		
 		
-		Raster inputRaster = inputImg.getData();
-		
-		int band = inputRaster.getNumBands();
+//		Raster inputRaster = inputImg.getData();
+//		
+//		int band = inputRaster.getNumBands();
 		
 //		System.out.println("band=" + band);
 		
@@ -204,47 +214,59 @@ public class GaborFilter implements IFilter{
 		
 		
 		
-		int kernelIdxCol, kernelIdxRow;
+//		int kernelIdxCol, kernelIdxRow;
 		
-		double[] pixel = new double[band];
+//		double[] pixel = new double[band];
 		
-		double kernelCoefficientRe, kernelCoefficientIm;
+//		double kernelCoefficientRe, kernelCoefficientIm;
 		
-		for(kernelIdxRow = 0; kernelIdxRow < kernelHeight; kernelIdxRow++){
+		for(int kernelPosX= 0; kernelPosX < kernelWidth; kernelPosX++){
 			
-			for(kernelIdxCol = 0; kernelIdxCol < kernelWidth; kernelIdxCol++){
+			for(int kernelPosY= 0; kernelPosY < kernelHeight; kernelPosY++){
 				
-				kernelCoefficientRe = kernel.getComplexCoefficient(kernelIdxCol, kernelIdxRow).getRe();
-				kernelCoefficientIm = kernel.getComplexCoefficient(kernelIdxCol, kernelIdxRow).getIm();
+//				kernelCoefficientRe = kernel.getComplexCoefficient(kernelIdxCol, kernelIdxRow).getRe();
+//				kernelCoefficientIm = kernel.getComplexCoefficient(kernelIdxCol, kernelIdxRow).getIm();
 				
 						
-				int pixelOffsetX = posX + (kernelIdxCol - kernel.getXOrigin());
+				int pixelOffsetX = posX + (kernelPosX - kernel.getXOrigin());
 				
-				int pixelOffsetY = posY + (kernelIdxRow - kernel.getYOrigin());
+				int pixelOffsetY = posY + (kernelPosY - kernel.getYOrigin());
+				
+				Coordinate2D pixelOffsetCoord = new Coordinate2D(pixelOffsetX, pixelOffsetY);
 				
 				
-				for(int b = 0; b < band; b++){
+
+				Complex pixel = new Complex();
+				
+				if(!pixelOffsetCoord.isIncluded(topLeftCoord, bottomRightCoord)){
 					
-					pixel[b] = inputRaster.getSampleDouble(pixelOffsetX, pixelOffsetY, b);
 					
+					if(edgeAction == IFilter.ZERO_PADDING){
+						
+						;
+					}
+					else if(edgeAction == IFilter.CONTINUOUS){
+						
+						pixel = inputImg.getPointData(pixelOffsetX, pixelOffsetY);
+						
+					}
+					
+					
+					
+					
+				}
+				else{
+					pixel = inputImg.getPointData(pixelOffsetX, pixelOffsetY);
 				}
 				
 
-				if(band == 1){
-					responseRe += (pixel[0] * kernelCoefficientRe);
-					responseIm += (pixel[0] * kernelCoefficientIm);
-				}
-				else{
-					double pixelVal = ImgCommonUtil.convertRGBtoGrayscale(pixel[0], pixel[1], pixel[2]);
-					responseRe += (pixelVal * kernelCoefficientRe);
-					responseIm += (pixelVal * kernelCoefficientIm);
-				}
+				response = response.add(pixel.mul(kernel.getComplexCoefficient(kernelPosX, kernelPosY)));
 				
 			}
 			
 			
 		}
-		double response = Math.sqrt(responseRe * responseRe + responseIm * responseIm);
+
 		
 		
 		return response;
@@ -253,10 +275,10 @@ public class GaborFilter implements IFilter{
 		
 	}
 	
-	*/
 	
-
-	public Complex pointConvolve(Spectrum inputImg, int posX, int posY, int edgeAction){
+	
+/*
+	public Complex pointConvolve(Spectrum inputImg, int posX, int posY, int patchWidth, int patchHeight, int edgeAction){
 		
 		if(this.kernel == null){
 			System.out.println("No Kernel");
@@ -285,14 +307,14 @@ public class GaborFilter implements IFilter{
 		
 //		double[] pixel = new double[band];
 		
-		double kernelCoefficientRe, kernelCoefficientIm;
+//		double kernelCoefficientRe, kernelCoefficientIm;
 		
 		for(kernelIdxRow = 0; kernelIdxRow < kernelHeight; kernelIdxRow++){
 			
 			for(kernelIdxCol = 0; kernelIdxCol < kernelWidth; kernelIdxCol++){
 				
-				kernelCoefficientRe = kernel.getComplexCoefficient(kernelIdxCol, kernelIdxRow).getRe();
-				kernelCoefficientIm = kernel.getComplexCoefficient(kernelIdxCol, kernelIdxRow).getIm();
+//				kernelCoefficientRe = kernel.getComplexCoefficient(kernelIdxCol, kernelIdxRow).getRe();
+//				kernelCoefficientIm = kernel.getComplexCoefficient(kernelIdxCol, kernelIdxRow).getIm();
 				
 						
 				int pixelOffsetX = posX + (kernelIdxCol - kernel.getXOrigin());
@@ -325,7 +347,7 @@ public class GaborFilter implements IFilter{
 	
 	
 	
-	
+	*/
 	
 	
 	

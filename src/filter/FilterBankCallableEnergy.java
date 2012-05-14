@@ -6,6 +6,8 @@ import java.awt.image.BufferedImage;
 import java.util.LinkedHashMap;
 import java.util.concurrent.Callable;
 
+import mathUtil.Coordinate2D;
+
 public class FilterBankCallableEnergy implements Callable<LinkedHashMap>{
 	
 	
@@ -18,9 +20,7 @@ public class FilterBankCallableEnergy implements Callable<LinkedHashMap>{
 	
 	private Spectrum srcImg;
 	
-	private int posX;
-	
-	private int posY;
+	private Coordinate2D patchCenterCoord;
 	
 	private int patchWidth;
 	
@@ -47,12 +47,11 @@ public class FilterBankCallableEnergy implements Callable<LinkedHashMap>{
 		this.filterBank = filterBank;
 	}
 	
-	public void setFilteringParams(Spectrum srcImg, int posX, int posY, int patchWidth, int patchHeight, int edgeAction){
+	public void setFilteringParams(Spectrum srcImg, Coordinate2D patchCenterCoord, int patchWidth, int patchHeight, int edgeAction){
 		
 		
 		this.srcImg = srcImg;
-		this.posX = posX;
-		this.posY = posY;
+		this.patchCenterCoord = patchCenterCoord;
 		this.patchWidth = patchWidth;
 		this.patchHeight = patchHeight;
 		this.edgeAction = edgeAction;
@@ -69,7 +68,7 @@ public class FilterBankCallableEnergy implements Callable<LinkedHashMap>{
 		
 		
 		
-		return filterBank.patchConvolveResultMapEnergy(srcImg, posX, posY, patchWidth, patchHeight, edgeAction);
+		return filterBank.patchConvolveResultMapEnergy(srcImg, patchCenterCoord, patchWidth, patchHeight, edgeAction);
 		
 		
 		

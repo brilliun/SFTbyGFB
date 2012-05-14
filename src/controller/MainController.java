@@ -142,13 +142,13 @@ public class MainController implements IMyController {
 	
 	public int getPatchWidth() {
 		// TODO Auto-generated method stub
-		return filterBankModel.getPatchWidth();
+		return sftModel.getPatchWidth();
 	}
 
 	
 	public int getPatchHeight() {
 		// TODO Auto-generated method stub
-		return filterBankModel.getPatchHeight();
+		return sftModel.getPatchHeight();
 	}
 
 
