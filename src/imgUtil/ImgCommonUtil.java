@@ -4,7 +4,11 @@ package imgUtil;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
+
+import javax.imageio.ImageIO;
 
 import mathUtil.Complex;
 
@@ -116,6 +120,39 @@ public class ImgCommonUtil {
 		return resultImg;
 	}
 	
+	
+	public static void writeToImgFile(int width, int height, double[][] data, double lowerBound, String fileName){
+		
+		
+		BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+		
+		WritableRaster raster = img.getRaster();
+		
+		
+		for(int x = 0; x < width; x++){
+			for(int y = 0; y < height; y++){
+				
+				int[] pixel = new int[1];
+				
+				pixel[0] = round((int)(data[x][y] - lowerBound), 0, 255);
+				
+				
+				raster.setPixel(x, y, pixel);
+			}
+		}
+		
+		
+		img.setData(raster);
+		
+		try {
+		   
+		    File outputfile = new File(fileName + ".png");
+		    ImageIO.write(img, "png", outputfile);
+		} catch (IOException e) {
+		    
+		}
+		
+	}
 
 	public static boolean isSingleBand(BufferedImage img){
 		

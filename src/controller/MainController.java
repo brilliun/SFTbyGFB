@@ -23,6 +23,18 @@ public class MainController implements IMyController {
 	private SrcImage srcImg; 
 	
 	
+
+	private void initModel(){
+		
+		this.srcImg = new SrcImage("test/D20_s55t60.bmp");
+		
+		
+		filterBankModel.init();
+		
+		sftModel.init();
+	}
+
+	
 	
 	public void triggerFiltering(Coordinate2D centerCoord){
 		
@@ -87,16 +99,6 @@ public class MainController implements IMyController {
 	}
 	
 	
-	private void initModel(){
-		
-		this.srcImg = new SrcImage("test/5_s30t250.bmp");
-		
-		
-		filterBankModel.init();
-		
-		sftModel.init();
-	}
-
 	
 	private void initView(){
 		
