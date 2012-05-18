@@ -89,7 +89,7 @@ public class SFTModel implements ISFTModel{
 		double[] responseB = filterBankModel.getFilterResultConcurrentEnergy();
 		
 		
-		Orientation estimatedOrientation = shapeEstimation.estimateShapeEnergyGraphic(responseA, responseB, pointA.shiftedCoord(), pointB.shiftedCoord());  
+		Orientation estimatedOrientation = shapeEstimation.estimateShapeEnergy(responseA, responseB, pointA.shiftedCoord(), pointB.shiftedCoord());  
 		
 		
 		System.out.println(estimatedOrientation.toString());

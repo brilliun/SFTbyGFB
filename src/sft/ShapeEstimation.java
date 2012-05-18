@@ -205,7 +205,7 @@ public class ShapeEstimation {
 				
 				responseDiff = ResponseDiff.computeResponseDiffEnergy(phi, responseA, responseB);
 				
-				diffMatrix[tiltIdx++][slantIdx] = Math.pow(responseDiff, 2.5);
+//				diffMatrix[tiltIdx++][slantIdx] = Math.pow(responseDiff, 2.5);
 				
 				if(responseDiff < minDiff){
 					
@@ -222,7 +222,7 @@ public class ShapeEstimation {
 			slantIdx++;
 		}
 		
-		ImgCommonUtil.writeToImgFile(tiltCount, slantCount, diffMatrix, Math.pow(minDiff, 2.5), "diffMatrix");
+//		ImgCommonUtil.writeToImgFile(tiltCount, slantCount, diffMatrix, Math.pow(minDiff, 2.5), "diffMatrix");
 		
 		
 		
