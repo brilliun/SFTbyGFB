@@ -44,11 +44,11 @@ public class Complex {
 	
 	
 	public double getAmplitude(){
-		return Math.sqrt(this.real * this.real + this.imaginary + this.imaginary);
+		return Math.sqrt(this.real * this.real + this.imaginary * this.imaginary);
 	}
 	
 	public double getPower(){
-		return this.real * this.real + this.imaginary + this.imaginary;
+		return this.real * this.real + this.imaginary * this.imaginary;
 	}
 	
 	public Complex getConjugate() {
