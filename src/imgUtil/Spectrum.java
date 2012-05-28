@@ -147,6 +147,10 @@ public class Spectrum {
 	}
 	
 	public Complex getPointData(int x, int y){
+		
+		if(data[x][y] == null)
+			return data[x][y] = new Complex();
+		
 		return data[x][y];
 	}
 
@@ -163,7 +167,7 @@ public class Spectrum {
 		for(int x = 0; x < dimX; x++){
 			for(int y = 0; y < dimY; y++){
 				
-				amplitudeSpectrum[x][y] = data[x][y].getAmplitude();
+				amplitudeSpectrum[x][y] = this.getPointData(x, y).getAmplitude();
 				
 				
 				
@@ -175,7 +179,22 @@ public class Spectrum {
 		
 		return amplitudeSpectrum;
 	}
-	
+
+	public double getAmplitudeSum(){
+		
+		double sum = 0;
+		
+		for(int x = 0; x < dimX; x++){
+			for(int y = 0; y < dimY; y++){
+				
+				sum += this.getPointData(x, y).getAmplitude();
+				
+				
+			}
+		}
+		
+		return sum;
+	}
 	
 	
 	public int getDimX(){

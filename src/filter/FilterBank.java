@@ -52,19 +52,31 @@ public class FilterBank implements IFilter{
 	}
 
 	
-	public Complex patchConvolve(Spectrum srcImg, Coordinate2D patchCenterCoord,	int width, int height, int edgeAction) {
+	public Spectrum patchConvolve(Spectrum srcImg, Coordinate2D patchCenterCoord,	int width, int height, int edgeAction) {
 		
-		Complex totalResponse = new Complex();
+//		Complex totalResponse = new Complex();
+		Spectrum patchResponse = new Spectrum(width, height);
 		
 		Iterator<IFilter> iter = filterBank.iterator();
 		
 		while(iter.hasNext()){
-			totalResponse = totalResponse.add(iter.next().patchConvolve(srcImg, patchCenterCoord, width, height, edgeAction));
+			
+			Spectrum filteredSpectrum = iter.next().patchConvolve(srcImg, patchCenterCoord, width, height, edgeAction); 
+			
+			for(int x = 0; x < width; x++){
+				for(int y = 0; y < height; y++){
+					
+					patchResponse.setPointData(x, y, patchResponse.getPointData(x, y).add(filteredSpectrum.getPointData(x, y)));
+					
+				}
+			}
+			
+			
 		}
 		
 				
 		
-		return totalResponse;
+		return patchResponse;
 	}
 	public double patchConvolveEnergy(Spectrum srcImg, Coordinate2D patchCenterCoord, int width, int height, int edgeAction) {
 		// TODO Auto-generated method stub
@@ -91,7 +103,7 @@ public class FilterBank implements IFilter{
 			
 			IFilter filter = iter.next();
 			
-			response = filter.patchConvolve(srcImg, patchCenterCoord, patchWidth, patchHeight, edgeAction).getAmplitude();
+			response = filter.patchConvolve(srcImg, patchCenterCoord, patchWidth, patchHeight, edgeAction).getAmplitudeSum();
 			
 			resultMap.put(filter, response);
 			
