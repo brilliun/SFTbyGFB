@@ -136,19 +136,20 @@ public class GaborFilter implements IFilter{
 		
 		Coordinate2D bottomRightCoord = new Coordinate2D(startX + patchWidth - 1, startY + patchHeight - 1);
 		
-		double response = 0.0;
+//		double response = 0.0;
+		Complex response = new Complex();
 		
 		
 		for(int countX = 0; countX < patchWidth; countX++){
 			for(int countY = 0; countY < patchHeight; countY++){
 				
-				response += dotProduct(inputImg, startX + countX, startY + countY, topLeftCoord, bottomRightCoord, edgeAction).getAmplitude();
+				response = response.add(dotProduct(inputImg, startX + countX, startY + countY, topLeftCoord, bottomRightCoord, edgeAction));
 				
 			}
 		}
 		
 		
-		return response;
+		return response.getAmplitude();
 		
 	}
 	
