@@ -118,7 +118,7 @@ public class GaborFilter implements IFilter{
 	
 
 	
-	public double patchConvolve(Spectrum inputImg, Coordinate2D patchCenterCoord, int patchWidth, int patchHeight, int edgeAction){
+	public Spectrum patchConvolve(Spectrum inputImg, Coordinate2D patchCenterCoord, int patchWidth, int patchHeight, int edgeAction){
 		
 	
 		
@@ -136,13 +136,13 @@ public class GaborFilter implements IFilter{
 		
 		Coordinate2D bottomRightCoord = new Coordinate2D(startX + patchWidth - 1, startY + patchHeight - 1);
 		
-		double response = 0.0;
+		Spectrum response = new Spectrum();
 		
 		
 		for(int countX = 0; countX < patchWidth; countX++){
 			for(int countY = 0; countY < patchHeight; countY++){
 				
-				response += dotProduct(inputImg, startX + countX, startY + countY, topLeftCoord, bottomRightCoord, edgeAction).getAmplitude();
+				response = response.add(dotProduct(inputImg, startX + countX, startY + countY, topLeftCoord, bottomRightCoord, edgeAction));
 				
 			}
 		}

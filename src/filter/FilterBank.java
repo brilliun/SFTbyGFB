@@ -52,14 +52,14 @@ public class FilterBank implements IFilter{
 	}
 
 	
-	public double patchConvolve(Spectrum srcImg, Coordinate2D patchCenterCoord,	int width, int height, int edgeAction) {
+	public Complex patchConvolve(Spectrum srcImg, Coordinate2D patchCenterCoord,	int width, int height, int edgeAction) {
 		
-		double totalResponse = 0.0;
+		Complex totalResponse = new Complex();
 		
 		Iterator<IFilter> iter = filterBank.iterator();
 		
 		while(iter.hasNext()){
-			totalResponse += iter.next().patchConvolve(srcImg, patchCenterCoord, width, height, edgeAction);
+			totalResponse = totalResponse.add(iter.next().patchConvolve(srcImg, patchCenterCoord, width, height, edgeAction));
 		}
 		
 				
@@ -91,7 +91,7 @@ public class FilterBank implements IFilter{
 			
 			IFilter filter = iter.next();
 			
-			response = filter.patchConvolve(srcImg, patchCenterCoord, patchWidth, patchHeight, edgeAction);
+			response = filter.patchConvolve(srcImg, patchCenterCoord, patchWidth, patchHeight, edgeAction).getAmplitude();
 			
 			resultMap.put(filter, response);
 			

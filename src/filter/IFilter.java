@@ -23,7 +23,7 @@ public interface IFilter {
 	
 	public Complex dotProduct(Spectrum srcImg, int posX, int posY, Coordinate2D coordA, Coordinate2D coordB, int edgeAction);
 	
-	public double patchConvolve(Spectrum srcImg, Coordinate2D patchCenterCoord, int width, int height, int edgeAction);
+	public Spectrum patchConvolve(Spectrum srcImg, Coordinate2D patchCenterCoord, int width, int height, int edgeAction);
 	
 	public double patchConvolveEnergy(Spectrum srcImg, Coordinate2D patchCenterCoord, int width, int height, int edgeAction);
 	
