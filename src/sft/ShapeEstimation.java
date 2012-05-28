@@ -30,37 +30,25 @@ public class ShapeEstimation {
 		double tiltGapD = 1.0;
 		
 		
-		double minDiff = 0.0;
+		double minDiff = Double.MAX_VALUE;
 		
 		
 		double slantD = 0.0;
 		double tiltD = 0.0;
 		
-		DistortionMatrix phi = new DistortionMatrix(viewAngleD, dimension, toRadians(slantD), toRadians(tiltD), pointA, pointB);
 		
 		
-		double responseDiff = ResponseDiff.computeResponseDiff(phi, responseA, responseB);
 		
+		
+		for(slantD = 0.0; slantD < 90.0; slantD += slantGapD){
 			
-//		slantEstimatedD = slantD;
-//		tiltEstimatedD = tiltD;
-			
-		minDiff = responseDiff;
-			
-			
-		
-		
-		
-		
-		for(slantD = slantGapD; slantD < 90.0; slantD += slantGapD)
-			
-			for(tiltD = tiltGapD; tiltD < 360.0; tiltD += tiltGapD){
+			for(tiltD = 0.0; tiltD < 360.0; tiltD += tiltGapD){
 				
 				
-				phi = new DistortionMatrix(viewAngleD, dimension, toRadians(slantD), toRadians(tiltD), pointA, pointB);
+				DistortionMatrix phi = new DistortionMatrix(viewAngleD, dimension, toRadians(slantD), toRadians(tiltD), pointA, pointB);
 				
 				
-				responseDiff = ResponseDiff.computeResponseDiff(phi, responseA, responseB);
+				double responseDiff = ResponseDiff.computeResponseDiff(phi, responseA, responseB);
 				
 				if(responseDiff < minDiff){
 					
@@ -73,9 +61,21 @@ public class ShapeEstimation {
 				}
 				
 			}
-			
-			
+		}
 		
+		
+		
+		double slantTruthD = 30;
+		double tiltTruthD = 250;
+		
+		
+		DistortionMatrix phi = new DistortionMatrix(viewAngleD, dimension, toRadians(slantTruthD), toRadians(tiltTruthD), pointA, pointB);
+		
+		
+		double responseDiffTruth = ResponseDiff.computeResponseDiff(phi, responseA, responseB);
+		
+		System.out.println("EstimatedDiff=" + minDiff);
+		System.out.println("TruthDiff=" + responseDiffTruth);
 		
 		return Orientation.orientationInDegree(slantEstimatedD, tiltEstimatedD);
 		

@@ -221,7 +221,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 			System.out.println("Zhankai");
 			if(centerPicked){
 
-				estimateGridEnergy(GRID_GAP);
+				estimateGrid(GRID_GAP);
 				
 				
 			}
@@ -340,50 +340,48 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 	}
 	
 	
-	private void estimateGridEnergy(int gridGap){
+	private void estimateGrid(int gridGap){
 		
 		int centerX = centerCoord.getX();
 		int centerY = centerCoord.getY();
 		
-		double slantAll = 0;
-		double tiltAll = 0;
-		
+			
 		LinkedList<Orientation> resultList = new LinkedList<Orientation>();
 		
 		System.out.println("#1");
-		resultList.add(estimateSingleEnergy(centerX, centerY)); //#1
+		resultList.add(estimateSingle(centerX, centerY)); //#1
 		this.repaint();
 		
 		System.out.println("#2");
-		resultList.add(estimateSingleEnergy(centerX - gridGap, centerY)); //#2
+		resultList.add(estimateSingle(centerX - gridGap, centerY)); //#2
 		this.repaint();
 		
 		System.out.println("#3");
-		resultList.add(estimateSingleEnergy(centerX + gridGap, centerY)); //#3
+		resultList.add(estimateSingle(centerX + gridGap, centerY)); //#3
 		this.repaint();
 		
 		System.out.println("#4");
-		resultList.add(estimateSingleEnergy(centerX, centerY - gridGap)); //#4
+		resultList.add(estimateSingle(centerX, centerY - gridGap)); //#4
 		this.repaint();
 		
 		System.out.println("#5");
-		resultList.add(estimateSingleEnergy(centerX, centerY + gridGap)); //#5
+		resultList.add(estimateSingle(centerX, centerY + gridGap)); //#5
 		this.repaint();
 		
 		System.out.println("#6");
-		resultList.add(estimateSingleEnergy(centerX - gridGap, centerY - gridGap)); //#6
+		resultList.add(estimateSingle(centerX - gridGap, centerY - gridGap)); //#6
 		this.repaint();
 		
 		System.out.println("#7");
-		resultList.add(estimateSingleEnergy(centerX + gridGap, centerY - gridGap)); //#7
+		resultList.add(estimateSingle(centerX + gridGap, centerY - gridGap)); //#7
 		this.repaint();
 		
 		System.out.println("#8");
-		resultList.add(estimateSingleEnergy(centerX - gridGap, centerY + gridGap)); //#8
+		resultList.add(estimateSingle(centerX - gridGap, centerY + gridGap)); //#8
 		this.repaint();
 		
 		System.out.println("#9");
-		resultList.add(estimateSingleEnergy(centerX + gridGap, centerY + gridGap)); //#9
+		resultList.add(estimateSingle(centerX + gridGap, centerY + gridGap)); //#9
 		this.repaint();
 		
 
@@ -396,7 +394,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 	}
 	
 	
-	private void estimateSingle(int centerX, int centerY){
+	private Orientation estimateSingle(int centerX, int centerY){
 		
 		
 		LinkedList<Orientation> resultOrientationList = new LinkedList<Orientation>();
@@ -460,10 +458,11 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 		
 		estimatedOrientations.add(avgOrient);
 		
-		estimatedPositions.add(centerCoord);
+		estimatedPositions.add(new Coordinate2D(centerX, centerY));
 		
 		needleColor.add(Color.GREEN);
 		
+		return avgOrient;
 	}
 	
 
