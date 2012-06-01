@@ -48,7 +48,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 	
 	private static final int NEEDLE_LENGTH = 80;
 	
-	private static final int GRID_GAP = 32;
+	private static final int GRID_GAP = 16;
 	
 	private IMyView mainView;
 	
@@ -155,6 +155,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 			
 		}
 		*/
+				
 		if(e.getKeyChar() == 'r'){ // estimate the orientation by any two patches selected
 		
 			if(leftPicked && rightPicked){
@@ -234,6 +235,38 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 			mainView.updateSrcImg(new SrcImage(FourierProcessingUtil.bandpassFiltering(mainView.getSrcImg().getBufferedImg(), 0.1, 0.45)));
 			
 			this.repaint();
+		}
+		else if(e.getKeyChar() == 'n'){
+			
+			int[][] pos = {{-146, 422}, {-118, 382}, {-85, 338}, {-49, 289}, {-8, 235}, {40, 172}, {81, 113}, 
+					 {-215, 415}, {-189, 373}, {-157, 334}, {-126, 282}, {-90, 225}, {-46, 162}, {-3, 95},
+					 {-283, 388}, {-254, 340}, {-226, 291}, {-196, 240}, {-162, 180}, {-127, 119}, {-88, 51},
+					 {-352, 354}, {-330, 311}, {-305, 266}, {-279, 213}, {-252, 159}, {-220, 95}, {-184, 25},
+					 {-404, 307}, {-385, 263}, {-363,213}, {-330, 133}, {-305, 78}, {-287, 38}, {-258, -32}};
+	
+			double[][] angs = {{52, 78}, {41, 86}, {44, 71}, {48, 67}, {48, 72}, {41, 90}, {34, 67},
+						  {45, 97}, {54, 98}, {78, 89}, {55, 87}, {25, 94}, {68, 95}, {73, 110},
+						  {45, 107}, {54, 107}, {39, 115}, {33, 125}, {50, 118}, {43, 120}, {45, 115},
+						  {57, 118}, {51, 129}, {37, 124}, {56, 121}, {55, 137}, {34, 135}, {36, 121},
+						  {46, 139}, {53, 130}, {58, 129}, {49, 142}, {40, 134}, {58, 146}, {45, 140}};
+			
+//			int[][] pos = {{408, -128}, {420, -232}, {278, -76}, {290, -197}, {105, 16}, {113, -150}, {-73, 100}, {-72, -94}};
+//			
+//			double[][] angs = {{72, 12.5}, {73.5, 6.5}, {82, 7.25}, {74, 12}, {74, 3}, {68.5, 6.5}, {80, 1}, {77.7, 12.5}};
+			
+			
+			for(int i = 0; i < pos.length; i++){
+				
+				estimatedOrientations.add(Orientation.orientationInDegree(angs[i][0], angs[i][1]));
+				
+				estimatedPositions.add(new Coordinate2D(pos[i][0] + 512, 512 - pos[i][1]));
+				
+				needleColor.add(Color.MAGENTA);
+			}
+			
+			this.repaint();
+			
+			
 		}
 		
 		else{ // move point
@@ -339,6 +372,60 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 		
 	}
 	
+	private void estimateGridVertical(int gridGap){
+		
+		
+
+		int centerX = centerCoord.getX();
+		int centerY = centerCoord.getY();
+		
+			
+		LinkedList<Orientation> resultList = new LinkedList<Orientation>();
+		
+		System.out.println("#1");
+		resultList.add(estimateVertical(centerX, centerY)); //#1
+		this.repaint();
+		
+		System.out.println("#2");
+		resultList.add(estimateVertical(centerX - gridGap, centerY)); //#2
+		this.repaint();
+		
+		System.out.println("#3");
+		resultList.add(estimateVertical(centerX + gridGap, centerY)); //#3
+		this.repaint();
+		
+		System.out.println("#4");
+		resultList.add(estimateVertical(centerX, centerY - gridGap)); //#4
+		this.repaint();
+		
+		System.out.println("#5");
+		resultList.add(estimateVertical(centerX, centerY + gridGap)); //#5
+		this.repaint();
+		
+		System.out.println("#6");
+		resultList.add(estimateVertical(centerX - gridGap, centerY - gridGap)); //#6
+		this.repaint();
+		
+		System.out.println("#7");
+		resultList.add(estimateVertical(centerX + gridGap, centerY - gridGap)); //#7
+		this.repaint();
+		
+		System.out.println("#8");
+		resultList.add(estimateVertical(centerX - gridGap, centerY + gridGap)); //#8
+		this.repaint();
+		
+		System.out.println("#9");
+		resultList.add(estimateVertical(centerX + gridGap, centerY + gridGap)); //#9
+		this.repaint();
+		
+
+		
+
+		Orientation avgOrient = avgOrientation(resultList);
+		
+		System.out.println("Grid Avg: slant = " + avgOrient.getSlantD() + ", tilt = " + avgOrient.getTiltD());
+	}
+	
 	
 	private void estimateGrid(int gridGap){
 		
@@ -392,6 +479,33 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 		System.out.println("Grid Avg: slant = " + avgOrient.getSlantD() + ", tilt = " + avgOrient.getTiltD());
 		
 	}
+	
+	private Orientation estimateVertical(int centerX, int centerY){
+		
+		LinkedList<Orientation> resultOrientationList = new LinkedList<Orientation>();
+		
+		int x1 = centerX;
+		int y1 = centerY - patchHeight/2;
+		
+		int x2 = centerX;
+		int y2 = centerY + patchHeight/2;
+		
+		
+		Orientation avgOrient = mainView.shapeEstimate(new Coordinate2D(x1, y1, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()), new Coordinate2D(x2, y2, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()));
+
+		System.out.println("Single Avg: slant = " + avgOrient.getSlantD() + ", tilt = " + avgOrient.getTiltD());
+		
+
+		
+		estimatedOrientations.add(avgOrient);
+		
+		estimatedPositions.add(new Coordinate2D(centerX, centerY));
+		
+		needleColor.add(Color.GREEN);
+		
+		return avgOrient;
+	}
+	
 	
 	
 	private Orientation estimateSingle(int centerX, int centerY){
@@ -591,7 +705,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 		if(!centerPicked)
 			return;
 		
-		((Graphics2D)g).setStroke(new BasicStroke(3.0f));
+		((Graphics2D)g).setStroke(new BasicStroke(7.0f));
 		
 		
 		for(int i = 0; i < estimatedOrientations.size(); i++){
@@ -616,7 +730,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 			
 			g.drawLine(x1, y1, x2, y2);
 			
-			g.setColor(Color.RED);
+			g.setColor(Color.GREEN);
 			
 			g.drawLine(x1, y1, x1, y1);
 			
@@ -678,8 +792,38 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 			sumTiltD += currentOrient.getTiltD();
 		}
 		
-		
 		return Orientation.orientationInDegree(sumSlantD / orientationList.size(), sumTiltD / orientationList.size());
+		
+//		
+//		double rawSlantD = sumSlantD / orientationList.size();
+//		double rawTiltD = sumTiltD / orientationList.size();
+//		
+//		Iterator<Orientation> newIter = orientationList.iterator();
+//		
+//		
+//		double newSumSlantD = 0.0;
+//		double newSumTiltD = 0.0;
+//		int newSize = 0;
+//		
+//		while(newIter.hasNext()){
+//			
+//			Orientation currOrient = newIter.next();
+//			
+//			if(Math.abs(currOrient.getSlantD() - rawSlantD) + Math.abs(currOrient.getTiltD() - rawTiltD) < 10.0){
+//				
+//				newSumSlantD += currOrient.getSlantD();
+//				newSumTiltD += currOrient.getTiltD();
+//				newSize++;
+//				
+//				System.out.println("Accepted: " + currOrient.getSlantD() + ", " + currOrient.getTiltD());
+//			}
+//			else
+//				System.out.println("Rejected: " + currOrient.getSlantD() + ", " + currOrient.getTiltD());
+//				
+//		}
+//		
+//		
+//		return Orientation.orientationInDegree(newSumSlantD / newSize, newSumTiltD / newSize);
 		
 	}
 	

@@ -11,7 +11,7 @@ public class SFTbyGFB {
 	public static void main(String[] args) {
 
 		
-		double viewAngle = 40.0;
+		double viewAngle = 80.0;
 		
 		int imgDimension = 512;
 		

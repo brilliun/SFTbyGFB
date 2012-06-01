@@ -63,19 +63,20 @@ public class ShapeEstimation {
 			}
 		}
 		
+		if(tiltEstimatedD > 180.0)
+			tiltEstimatedD -= 360.0;
 		
+//		double slantTruthD = 30;
+//		double tiltTruthD = 250;
+//		
+//		
+//		DistortionMatrix phi = new DistortionMatrix(viewAngleD, dimension, toRadians(slantTruthD), toRadians(tiltTruthD), pointA, pointB);
+//		
+//		
+//		double responseDiffTruth = ResponseDiff.computeResponseDiff(phi, responseA, responseB);
 		
-		double slantTruthD = 30;
-		double tiltTruthD = 250;
-		
-		
-		DistortionMatrix phi = new DistortionMatrix(viewAngleD, dimension, toRadians(slantTruthD), toRadians(tiltTruthD), pointA, pointB);
-		
-		
-		double responseDiffTruth = ResponseDiff.computeResponseDiff(phi, responseA, responseB);
-		
-		System.out.println("EstimatedDiff=" + minDiff);
-		System.out.println("TruthDiff=" + responseDiffTruth);
+//		System.out.println("EstimatedDiff=" + minDiff);
+//		System.out.println("TruthDiff=" + responseDiffTruth);
 		
 		return Orientation.orientationInDegree(slantEstimatedD, tiltEstimatedD);
 		

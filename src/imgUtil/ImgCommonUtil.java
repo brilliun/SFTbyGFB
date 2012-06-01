@@ -153,6 +153,7 @@ public class ImgCommonUtil {
 		}
 		
 	}
+	
 
 	public static boolean isSingleBand(BufferedImage img){
 		
