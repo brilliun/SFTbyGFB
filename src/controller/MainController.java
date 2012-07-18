@@ -26,7 +26,7 @@ public class MainController implements IMyController {
 
 	private void initModel(){
 		
-		this.srcImg = new SrcImage("test/tower1024.bmp");
+		this.srcImg = new SrcImage("test/Massot/D75_s45t0.bmp");
 		
 		
 		filterBankModel.init();
@@ -55,13 +55,13 @@ public class MainController implements IMyController {
 	
 	
 	
-	public Orientation triggerShapeEstimationEnergy(Coordinate2D coordA, Coordinate2D coordB) {
-		
-		
-		return sftModel.doShapeEstimationEnergy(filterBankModel, srcImg.getSpectrum(), coordA, coordB);
-		
-		
-	}
+//	public Orientation triggerShapeEstimationEnergy(Coordinate2D coordA, Coordinate2D coordB) {
+//		
+//		
+//		return sftModel.doShapeEstimationEnergy(filterBankModel, srcImg.getSpectrum(), coordA, coordB);
+//		
+//		
+//	}
 	
 	
 	

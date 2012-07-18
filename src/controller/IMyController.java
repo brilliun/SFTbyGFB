@@ -48,5 +48,5 @@ public interface IMyController {
 	
 	public Orientation triggerShapeEstimation(Coordinate2D coordA, Coordinate2D coordB);
 	
-	public Orientation triggerShapeEstimationEnergy(Coordinate2D coordA, Coordinate2D coordB);
+//	public Orientation triggerShapeEstimationEnergy(Coordinate2D coordA, Coordinate2D coordB);
 }

@@ -139,11 +139,11 @@ public class MainView implements IMyView {
 		
 	}
 	
-	public Orientation shapeEstimateEnergy(Coordinate2D coordA, Coordinate2D coordB) {
-		
-		return controller.triggerShapeEstimationEnergy(coordA, coordB);
-		
-	}
+//	public Orientation shapeEstimateEnergy(Coordinate2D coordA, Coordinate2D coordB) {
+//		
+//		return controller.triggerShapeEstimationEnergy(coordA, coordB);
+//		
+//	}
 	
 	
 }

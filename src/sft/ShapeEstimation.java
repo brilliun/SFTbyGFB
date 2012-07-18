@@ -12,11 +12,109 @@ public class ShapeEstimation {
 	
 	private int dimension;
 	
+	private static final double SLANT_MAX = 90.0;
+	
+	private static final double SLANT_MIN = 0.0;
+	
+	private static final double TILT_MAX = 360.0;
+	
+	private static final double TILT_MIN = 0.0;
+	
+	
 	
 	public ShapeEstimation(double viewAngleD, int dimension){
 		this.viewAngleD = viewAngleD;
 		this.dimension = dimension;
+		
 	}
+	
+	
+	
+	public Orientation coarseToFineEstimate(double[] responseA, double[] responseB, Coordinate2D pointA, Coordinate2D pointB){
+		
+		double[] slantGap = {5.0, 1.0, 0.1};
+		
+		double[] tiltGap = {10.0, 2.0, 0.5};
+		
+		int iterationRounds = 3;
+		
+		
+		double slantStart = SLANT_MIN;
+		double slantEnd = SLANT_MAX;
+		
+		double tiltStart = TILT_MIN;
+		double tiltEnd = TILT_MAX;
+		
+		Orientation tempResult = null;
+		
+		for(int iteration = 0; iteration < iterationRounds; iteration++){
+			
+			tempResult = findMinDiff(slantStart, slantEnd, slantGap[iteration], tiltStart, tiltEnd, tiltGap[iteration], responseA, responseB, pointA, pointB);
+			
+			slantStart = tempResult.getSlantD() - slantGap[iteration];
+			slantEnd = tempResult.getSlantD() + slantGap[iteration];
+			
+			tiltStart = tempResult.getTiltD() - tiltGap[iteration];
+			tiltEnd = tempResult.getTiltD() + tiltGap[iteration];
+			
+			slantStart = slantStart < SLANT_MIN ? SLANT_MIN: slantStart;
+			slantEnd = slantEnd > SLANT_MAX ? SLANT_MAX : slantEnd;
+			
+			tiltStart = tiltStart < TILT_MIN ? TILT_MIN : tiltStart;
+			tiltEnd = tiltEnd > TILT_MAX ? TILT_MAX : tiltEnd;
+		}
+		
+		
+		if(tempResult.getTiltD() >= 180.0)
+			tempResult = Orientation.orientationInDegree(tempResult.getSlantD(), tempResult.getTiltD()-360.0);
+			
+		
+		return tempResult;
+		
+		
+		
+	}
+	
+	
+	
+	
+	
+	private Orientation findMinDiff(double slantStart, double slantEnd, double slantGap, double tiltStart, double tiltEnd, double tiltGap, double[] responseA, double[] responseB, Coordinate2D pointA, Coordinate2D pointB){
+		
+		
+		double minDiff = Double.MAX_VALUE;
+		
+		double slantEstimated = 0.0;
+		double tiltEstimated = 0.0;
+		
+		for(double slant = slantStart; slant < slantEnd; slant += slantGap){
+			
+			for(double tilt = tiltStart; tilt < tiltEnd; tilt += tiltGap){
+				
+				
+				DistortionMatrix phi = new DistortionMatrix(viewAngleD, dimension, toRadians(slant), toRadians(tilt), pointA, pointB);
+				
+				
+				double responseDiff = ResponseDiff.computeResponseDiff(phi, responseA, responseB);
+				
+				if(responseDiff < minDiff){
+					
+					slantEstimated = slant;
+					tiltEstimated = tilt;
+					
+					minDiff = responseDiff;
+					
+					
+				}
+				
+			}
+			
+			
+		}
+		
+		return Orientation.orientationInDegree(slantEstimated, tiltEstimated);
+	}
+	
 	
 	
 	public Orientation estimateShape(double[] responseA, double[] responseB, Coordinate2D pointA, Coordinate2D pointB){
@@ -26,8 +124,8 @@ public class ShapeEstimation {
 		double tiltEstimatedD = 0.0;
 		
 		
-		double slantGapD = 1.0;
-		double tiltGapD = 1.0;
+		double slantGapD = 0.1;
+		double tiltGapD = 0.1;
 		
 		
 		double minDiff = Double.MAX_VALUE;
@@ -84,162 +182,4 @@ public class ShapeEstimation {
 		
 		
 	}
-
-	public Orientation estimateShapeEnergy(double[] responseA, double[] responseB, Coordinate2D pointA, Coordinate2D pointB){
-		
-		
-		double slantEstimatedD = 0.0;
-		double tiltEstimatedD = 0.0;
-		
-		
-		double slantGapD = 1.0;
-		double tiltGapD = 1.0;
-		
-		
-		double minDiff = 0.0;
-		
-		
-		double slantD = 0.0;
-		double tiltD = 0.0;
-		
-		DistortionMatrix phi = new DistortionMatrix(viewAngleD, dimension, toRadians(slantD), toRadians(tiltD), pointA, pointB);
-		
-		
-		double responseDiff = ResponseDiff.computeResponseDiffEnergy(phi, responseA, responseB);
-		
-			
-//		slantEstimatedD = slantD;
-//		tiltEstimatedD = tiltD;
-			
-		minDiff = responseDiff;
-		
-		double maxDiff = Double.MIN_VALUE;
-			
-			
-		
-		
-		
-		
-		for(slantD = slantGapD; slantD < 90.0; slantD += slantGapD){
-			
-			for(tiltD = tiltGapD; tiltD < 360.0; tiltD += tiltGapD){
-				
-				
-				phi = new DistortionMatrix(viewAngleD, dimension, toRadians(slantD), toRadians(tiltD), pointA, pointB);
-				
-				
-				responseDiff = ResponseDiff.computeResponseDiffEnergy(phi, responseA, responseB);
-				
-				if(responseDiff < minDiff){
-					
-					slantEstimatedD = slantD;
-					tiltEstimatedD = tiltD;
-					
-					minDiff = responseDiff;
-					
-					
-				}
-				
-				if(responseDiff > maxDiff)
-					maxDiff = responseDiff;
-			}
-			
-		}
-		
-		
-		return Orientation.orientationInDegree(slantEstimatedD, tiltEstimatedD);
-		
-		
-	}
-	
-	
-	
-	public Orientation estimateShapeEnergyGraphic(double[] responseA, double[] responseB, Coordinate2D pointA, Coordinate2D pointB){
-		
-		
-		double slantEstimatedD = 0.0;
-		double tiltEstimatedD = 0.0;
-		
-		
-		double slantGapD = 1.0;
-		double tiltGapD = 1.0;
-		
-		
-		double minDiff = Double.MAX_VALUE;
-//		double maxDiff = Double.MIN_VALUE;
-		
-		
-		
-		double slantD = 0.0;
-		double tiltD = 0.0;
-		
-		DistortionMatrix phi;
-		
-		double responseDiff = 0.0;
-			
-//		slantEstimatedD = slantD;
-//		tiltEstimatedD = tiltD;
-			
-			
-		int slantCount = 90;
-		int tiltCount = 360;
-		
-		
-		double[][] diffMatrix = new double[tiltCount][slantCount]; 
-		
-		
-
-		int slantIdx = 0;
-		int tiltIdx;
-		
-		for(slantD = 0.0; slantD < 90.0; slantD += slantGapD){
-			
-			
-			tiltIdx = 0;
-			
-			for(tiltD = 0.0; tiltD < 360.0; tiltD += tiltGapD){
-				
-				
-				
-				phi = new DistortionMatrix(viewAngleD, dimension, toRadians(slantD), toRadians(tiltD), pointA, pointB);
-				
-				
-				responseDiff = ResponseDiff.computeResponseDiffEnergy(phi, responseA, responseB);
-				
-//				diffMatrix[tiltIdx++][slantIdx] = Math.pow(responseDiff, 2.5);
-				
-				if(responseDiff < minDiff){
-					
-					slantEstimatedD = slantD;
-					tiltEstimatedD = tiltD;
-					
-					minDiff = responseDiff;
-					
-					
-				}
-				
-			}
-			
-			slantIdx++;
-		}
-		
-//		ImgCommonUtil.writeToImgFile(tiltCount, slantCount, diffMatrix, Math.pow(minDiff, 2.5), "diffMatrix");
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		return Orientation.orientationInDegree(slantEstimatedD, tiltEstimatedD);
-		
-		
-	}
-
 }

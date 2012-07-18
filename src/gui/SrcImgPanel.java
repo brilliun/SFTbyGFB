@@ -74,13 +74,15 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 	
 	private boolean centerPicked;
 	
-	private boolean gridSelected;
+	
 	
 	
 	
 	private static final int FORMER = 1;
 	
 	private static final int LATTER = 2;
+	
+	private static final int CENTER = 3;
 	
 	private int active;
 	
@@ -125,7 +127,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 			
 			centerPicked = true;
 			
-			gridSelected = true;
+			active = CENTER;
 		}
 		
 		this.repaint();
@@ -203,19 +205,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 			
 		}
 		
-		else if(e.getKeyChar() == 'e'){ // estimate the orientation by four pairs of patches around a center point(Energy)
-			
-			System.out.println("Energy -- Diagonal & Cross");
-			
-			if(centerPicked){
-				
-				
-				estimateSingleEnergy(centerCoord.getX(), centerCoord.getY());
-				
-				this.repaint();
-			}
-			
-		}
+		
 		
 		else if(e.getKeyChar() == 'z'){ // estimate the orientation by four pairs of patches around 9 center points
 			
@@ -232,7 +222,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 		else if(e.getKeyChar() == 'p'){ // pre-processing of the target image
 			
 			
-			mainView.updateSrcImg(new SrcImage(FourierProcessingUtil.bandpassFiltering(mainView.getSrcImg().getBufferedImg(), 0.1, 0.45)));
+			mainView.updateSrcImg(new SrcImage(FourierProcessingUtil.bandpassFiltering(mainView.getSrcImg().getBufferedImg(), 0.06, 0.45)));
 			
 			this.repaint();
 		}
@@ -277,7 +267,8 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 				activeCoord = formerCoord;
 			else if(active == LATTER)
 				activeCoord = latterCoord;
-			
+			else if(active == CENTER)
+				activeCoord = centerCoord;
 			
 			moveCoordinate(activeCoord, e.getKeyCode(), 1);
 		
@@ -580,74 +571,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 	}
 	
 
-	private Orientation estimateSingleEnergy(int centerX, int centerY){
-		
-		LinkedList<Orientation> resultOrientationList = new LinkedList<Orientation>();
-		
-		//Diagonal
-		int topLeftX = centerX - patchWidth/2;
-		int topLeftY = centerY - patchHeight/2;
-		
-		int bottomRightX = centerX + patchWidth/2;
-		int bottomRightY = centerY + patchHeight/2;
-				
-
-//		needleColor.add(Color.GREEN);
-		
-		resultOrientationList.add(mainView.shapeEstimateEnergy(new Coordinate2D(topLeftX, topLeftY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()), new Coordinate2D(bottomRightX, bottomRightY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight())));
-		
-		
-		int topRightX = centerX + patchWidth/2;
-		int topRightY = centerY + patchHeight/2;
-		
-		int bottomLeftX = centerX - patchWidth/2;
-		int bottomLeftY = centerY - patchHeight/2;
-				
-//		needleColor.add(Color.GREEN);
-		
-		resultOrientationList.add(mainView.shapeEstimateEnergy(new Coordinate2D(topRightX, topRightY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()), new Coordinate2D(bottomLeftX, bottomLeftY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight())));
-		
-		
-		
-		//Cross
-		int leftX = centerX - patchWidth/2;
-		int leftY = centerY;
-		
-		int rightX = centerX + patchWidth/2;
-		int rightY = centerY;
-				
-
-//		needleColor.add(Color.GREEN);
-		
-		resultOrientationList.add(mainView.shapeEstimateEnergy(new Coordinate2D(leftX, leftY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()), new Coordinate2D(rightX, rightY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight())));
-		
-		
-		int topX = centerX;
-		int topY = centerY + patchHeight/2;
-		
-		int bottomX = centerX;
-		int bottomY = centerY - patchHeight/2;
-				
-//		needleColor.add(Color.GREEN);
-		
-		resultOrientationList.add(mainView.shapeEstimateEnergy(new Coordinate2D(topX, topY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()), new Coordinate2D(bottomX, bottomY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight())));
-		
-		
-		
-		Orientation avgOrient = avgOrientation(resultOrientationList);
-		
-		System.out.println("Energy Avg: slant = " + avgOrient.getSlantD() + ", tilt = " + avgOrient.getTiltD());
 	
-		
-		estimatedOrientations.add(avgOrient);
-		
-		estimatedPositions.add(new Coordinate2D(centerX, centerY));
-		
-		needleColor.add(Color.YELLOW);
-		
-		return avgOrient;
-		
-	}
 	
 	
 	
@@ -773,6 +697,14 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
        	
     	   
         }
+       if(centerPicked){
+    	   
+    	   System.out.println("Center" + centerCoord.toString());
+    	   
+    	   g.setColor(POINT_COLOR);
+    	   
+    	   g.drawRect(centerCoord.getX() - 1, centerCoord.getY() - 1, 2, 2);
+       }
 		
 	}
 	

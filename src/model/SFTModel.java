@@ -69,8 +69,13 @@ public class SFTModel implements ISFTModel{
 		
 		double[] responseB = filterBankModel.getFilterResultConcurrent();
 		
+//		System.out.println("start searching");
 		
-		Orientation estimatedOrientation = shapeEstimation.estimateShape(responseA, responseB, pointA.shiftedCoord(), pointB.shiftedCoord());  
+		Orientation estimatedOrientation = shapeEstimation.coarseToFineEstimate(responseA, responseB, pointA.shiftedCoord(), pointB.shiftedCoord());  
+		
+		
+		
+		
 		
 		System.out.println(estimatedOrientation.toString());
 		
@@ -78,25 +83,25 @@ public class SFTModel implements ISFTModel{
 		return estimatedOrientation;
 	}
 	
-	public Orientation doShapeEstimationEnergy(IFilterBankModel filterBankModel, Spectrum srcImg, Coordinate2D pointA, Coordinate2D pointB){
-		
-		filterBankModel.doFilteringConcurrentEnergy(srcImg, pointA);
-		
-		double[] responseA = filterBankModel.getFilterResultConcurrentEnergy();
-		
-		filterBankModel.doFilteringConcurrentEnergy(srcImg, pointB);
-		
-		double[] responseB = filterBankModel.getFilterResultConcurrentEnergy();
-		
-		
-		Orientation estimatedOrientation = shapeEstimation.estimateShapeEnergy(responseA, responseB, pointA.shiftedCoord(), pointB.shiftedCoord());  
-		
-		
-		System.out.println(estimatedOrientation.toString());
-		
-		
-		return estimatedOrientation;
-	}
+//	public Orientation doShapeEstimationEnergy(IFilterBankModel filterBankModel, Spectrum srcImg, Coordinate2D pointA, Coordinate2D pointB){
+//		
+//		filterBankModel.doFilteringConcurrentEnergy(srcImg, pointA);
+//		
+//		double[] responseA = filterBankModel.getFilterResultConcurrentEnergy();
+//		
+//		filterBankModel.doFilteringConcurrentEnergy(srcImg, pointB);
+//		
+//		double[] responseB = filterBankModel.getFilterResultConcurrentEnergy();
+//		
+//		
+//		Orientation estimatedOrientation = shapeEstimation.estimateShapeEnergy(responseA, responseB, pointA.shiftedCoord(), pointB.shiftedCoord());  
+//		
+//		
+//		System.out.println(estimatedOrientation.toString());
+//		
+//		
+//		return estimatedOrientation;
+//	}
 	
 	
 	public void doSlantTiltMapGeneration(IFilterBankModel filterBankModel, Coordinate2D startCoord, int rangeX, int rangeY){

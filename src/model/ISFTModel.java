@@ -19,6 +19,6 @@ public interface ISFTModel {
 					
 	public Orientation doShapeEstimation(IFilterBankModel filterBankModel, Spectrum srcImg, Coordinate2D coordA, Coordinate2D coordB);
 	
-	public Orientation doShapeEstimationEnergy(IFilterBankModel filterBankModel, Spectrum srcImg, Coordinate2D coordA, Coordinate2D coordB);
+//	public Orientation doShapeEstimationEnergy(IFilterBankModel filterBankModel, Spectrum srcImg, Coordinate2D coordA, Coordinate2D coordB);
 
 }

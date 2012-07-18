@@ -30,7 +30,7 @@ public interface IMyView {
 	
 	public Orientation shapeEstimate(Coordinate2D coordA, Coordinate2D coordB);
 	
-	public Orientation shapeEstimateEnergy(Coordinate2D coordA, Coordinate2D coordB);
+//	public Orientation shapeEstimateEnergy(Coordinate2D coordA, Coordinate2D coordB);
 	
 //	public void addNormalNeedle(Orientation orientationEstimated);
 

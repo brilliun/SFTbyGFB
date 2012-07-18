@@ -33,10 +33,12 @@ public class ResponseDiff {
 				thetaA += PI;
 			
 			
-			double responseInter = linearInterpolation(thetaA, orientations, responseA);
+			double responseInter = InterpolationUtil.gaussInterpolation(thetaA, orientations, responseA);
 			
+			double coef = phi.determinate() ;
+//			System.out.println(coef);
 			
-			double responseB_recovered = phi.determinate() / pow(lambda, 2) * responseInter;
+			double responseB_recovered = coef * responseInter;
 			
 			
 			totalDiff += abs(responseB_recovered - responseB[n]) / responseB[n];
@@ -74,10 +76,10 @@ public class ResponseDiff {
 				thetaA += PI;
 			
 			
-			double responseInter = linearInterpolation(thetaA, orientations, responseA);
+			double responseInter = InterpolationUtil.linearInterpolation(thetaA, orientations, responseA);
 			
 			
-			double responseB_recovered = pow(phi.determinate(), 2) / pow(lambda, 2) * responseInter;
+			double responseB_recovered = phi.determinate() * responseInter;
 			
 			
 			totalDiff += abs(responseB_recovered - responseB[n]) / responseB[n];
@@ -89,27 +91,6 @@ public class ResponseDiff {
 	}
 	
 	
-	private static double linearInterpolation(double thetaA, int orientations, double[] responses){
-		
-		double dTheta = PI / orientations;
-
-		int n0 = (int) (floor(thetaA / dTheta) % orientations);
-		
-		int n1 = (int) (ceil(thetaA / dTheta) % orientations);
-		
-		double theta0 = n0 * dTheta;
-		
-		double response0 = responses[n0];
-		
-		double response1 = responses[n1];
-		
-		
-		double response_interpolation = response0 + (thetaA - theta0) * (response1 - response0) / dTheta;
-		
-		return response_interpolation;
-		
-		
-	}
 	
 	
 	private static double thetaRotated(DistortionMatrix phi, double thetaB){
