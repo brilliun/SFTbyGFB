@@ -84,6 +84,8 @@ public class Coordinate2D {
 		
 			int x_alias = x - dimensionX/2;
 			
+//			x_alias -= 95;
+			
 			int y_alias = dimensionY/2 - y;
 			
 			return new Coordinate2D(x_alias, y_alias, dimensionX, dimensionY);

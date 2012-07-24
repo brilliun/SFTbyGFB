@@ -35,7 +35,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 	
 	private static final int PANEL_HEIGHT = 800;
 	
-	private static final Color POINT_COLOR = Color.GREEN;
+	private static final Color POINT_COLOR = Color.RED;
 	
 	private static final Color FORMER_COLOR = Color.RED;
 	
@@ -46,7 +46,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 //	private int height;
 	
 	
-	private static final int NEEDLE_LENGTH = 80;
+	private static final int NEEDLE_LENGTH = 100;
 	
 	private static final int GRID_GAP = 16;
 	
@@ -222,37 +222,74 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 		else if(e.getKeyChar() == 'p'){ // pre-processing of the target image
 			
 			
-			mainView.updateSrcImg(new SrcImage(FourierProcessingUtil.bandpassFiltering(mainView.getSrcImg().getBufferedImg(), 0.06, 0.45)));
+			mainView.updateSrcImg(new SrcImage(FourierProcessingUtil.bandpassFiltering(
+					mainView.getSrcImg().getBufferedImg(), 0.1, 0.45)));
 			
 			this.repaint();
 		}
 		else if(e.getKeyChar() == 'n'){
+//			
+//			int[][] pos = {{-171, 95}, {-115, 84}, {-69, 77}, {-11 ,65}, {41, 53}, 
+//					{-166, 6}, {-106, 4}, {-48, 2}, {3, 0}, {61, -2},
+//					{-170, -72}, {-109, -65}, {-50, -59}, {-2, -55}, {59, -40}};
+//			
+//			int[][] angs = {{30, 43}, {42, 49}, {38, 65}, {50, 54}, {43, 59},
+//					{44, 2}, {50, -5}, {50, 4}, {65, 0}, {59, 3},
+//					{58, -37}, {43, -47}, {49, -50}, {45, -44}, {49, -36}};
 			
-			int[][] pos = {{-146, 422}, {-118, 382}, {-85, 338}, {-49, 289}, {-8, 235}, {40, 172}, {81, 113}, 
-					 {-215, 415}, {-189, 373}, {-157, 334}, {-126, 282}, {-90, 225}, {-46, 162}, {-3, 95},
-					 {-283, 388}, {-254, 340}, {-226, 291}, {-196, 240}, {-162, 180}, {-127, 119}, {-88, 51},
-					 {-352, 354}, {-330, 311}, {-305, 266}, {-279, 213}, {-252, 159}, {-220, 95}, {-184, 25},
-					 {-404, 307}, {-385, 263}, {-363,213}, {-330, 133}, {-305, 78}, {-287, 38}, {-258, -32}};
-	
-			double[][] angs = {{52, 78}, {41, 86}, {44, 71}, {48, 67}, {48, 72}, {41, 90}, {34, 67},
-						  {45, 97}, {54, 98}, {78, 89}, {55, 87}, {25, 94}, {68, 95}, {73, 110},
-						  {45, 107}, {54, 107}, {39, 115}, {33, 125}, {50, 118}, {43, 120}, {45, 115},
-						  {57, 118}, {51, 129}, {37, 124}, {56, 121}, {55, 137}, {34, 135}, {36, 121},
-						  {46, 139}, {53, 130}, {58, 129}, {49, 142}, {40, 134}, {58, 146}, {45, 140}};
+			//floor
+//			int[][] pos = {{-138, -130}, {-9, -137}, {123, -139}, {-128, -59}, {-8, -66}, {121, -66}, {-135, 24}, {-6, 15}, {110, 7}};
+//			
+//			int[][] angs = {{55, 80}, {45, 93}, {49, 87}, {60, 90}, {46, 78}, {55, 88}, {42, 84}, {50, 90}, {60, 95}};
 			
+			//slope
+//			int[][] pos = {{-128, -97}, {-106, -17}, {-81, 42}, {2, 39}, {71, 37}, {8, -25}, {1, -105}, {108, -117}, {101, -26}, {82, 96}, {20, 101}};
+//			int [][] angs = {{80, 79}, {70, 82}, {67, 67}, {45, 54}, {45, 45}, {68, 65}, {70, 75}, {80, 69}, {67, 76}, {20, 40}, {30, 60}};
+			
+			//tower
+//			int[][] pos = {{-146, 422}, {-118, 382}, {-85, 338}, {-49, 289}, {-8, 235}, {40, 172}, {81, 113}, 
+//					 {-215, 415}, {-189, 373}, {-157, 334}, {-126, 282}, {-90, 225}, {-46, 162}, {-3, 95},
+//					 {-283, 388}, {-254, 340}, {-226, 291}, {-196, 240}, {-162, 180}, {-127, 119}, {-88, 51},
+//					 {-352, 354}, {-330, 311}, {-305, 266}, {-279, 213}, {-252, 159}, {-220, 95}, {-184, 25},
+//					 {-404, 307}, {-385, 263}, {-363,213}, {-330, 133}, {-305, 78}, {-287, 38}, {-258, -32}};
+//	
+//			double[][] angs = {{52, 78}, {41, 86}, {44, 71}, {48, 67}, {48, 72}, {41, 90}, {34, 67},
+//						  {45, 97}, {54, 98}, {78, 89}, {55, 87}, {25, 94}, {68, 95}, {73, 110},
+//						  {45, 107}, {54, 107}, {39, 115}, {33, 125}, {50, 118}, {43, 120}, {45, 115},
+//						  {57, 118}, {51, 129}, {37, 124}, {56, 121}, {55, 137}, {34, 135}, {36, 121},
+//						  {46, 139}, {53, 130}, {58, 129}, {49, 142}, {40, 134}, {58, 146}, {45, 140}};
+			
+			
+			//library
 //			int[][] pos = {{408, -128}, {420, -232}, {278, -76}, {290, -197}, {105, 16}, {113, -150}, {-73, 100}, {-72, -94}};
 //			
 //			double[][] angs = {{72, 12.5}, {73.5, 6.5}, {82, 7.25}, {74, 12}, {74, 3}, {68.5, 6.5}, {80, 1}, {77.7, 12.5}};
 			
 			
-			for(int i = 0; i < pos.length; i++){
-				
-				estimatedOrientations.add(Orientation.orientationInDegree(angs[i][0], angs[i][1]));
-				
-				estimatedPositions.add(new Coordinate2D(pos[i][0] + 512, 512 - pos[i][1]));
-				
-				needleColor.add(Color.MAGENTA);
-			}
+			
+			
+//			for(int i = 0; i < pos.length; i++){
+//				
+//				estimatedOrientations.add(Orientation.orientationInDegree(angs[i][0], angs[i][1]));
+//				
+//				estimatedPositions.add(new Coordinate2D(pos[i][0] + 256 , 256 -pos[i][1]));
+//				
+//				needleColor.add(Color.MAGENTA);
+//			}
+			
+			
+			int[] pos = {31, 68};
+			double[] angEstimated = {42.46, 300.29};
+			double[] angTruth = {45, 300};
+			
+			estimatedOrientations.add(Orientation.orientationInDegree(angTruth[0], angTruth[1]));
+			estimatedPositions.add(new Coordinate2D(pos[0] + 256 , 256 -pos[1]));
+			needleColor.add(Color.GREEN);
+			
+			estimatedOrientations.add(Orientation.orientationInDegree(angEstimated[0], angEstimated[1]));
+			estimatedPositions.add(new Coordinate2D(pos[0] + 256 , 256 -pos[1]));
+			needleColor.add(Color.MAGENTA);
+			
 			
 			this.repaint();
 			
@@ -297,10 +334,15 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 			centerCoord.setCoordinate(centerX, centerY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight());
 			
 			
-			mainView.shapeEstimate(formerCoord, latterCoord);
+			Orientation orientation = mainView.shapeEstimate(formerCoord, latterCoord);
+			
+			estimatedOrientations.add(orientation);
+			
+			estimatedPositions.add(new Coordinate2D(centerX, centerY));
+			
+			needleColor.add(Color.GREEN);
 			
 			
-		
 	}
 	
 	
@@ -412,7 +454,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 
 		
 
-		Orientation avgOrient = avgOrientation(resultList);
+		Orientation avgOrient = avgOrientation(resultList, null);
 		
 		System.out.println("Grid Avg: slant = " + avgOrient.getSlantD() + ", tilt = " + avgOrient.getTiltD());
 	}
@@ -465,7 +507,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 
 		
 
-		Orientation avgOrient = avgOrientation(resultList);
+		Orientation avgOrient = avgOrientation(resultList, null);
 		
 		System.out.println("Grid Avg: slant = " + avgOrient.getSlantD() + ", tilt = " + avgOrient.getTiltD());
 		
@@ -513,9 +555,10 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 		int bottomRightY = centerY + patchHeight/2;
 				
 
+		
 //		needleColor.add(Color.GREEN);
 		
-		resultOrientationList.add(mainView.shapeEstimate(new Coordinate2D(topLeftX, topLeftY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()), new Coordinate2D(bottomRightX, bottomRightY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight())));
+		
 		
 		
 		int topRightX = centerX + patchWidth/2;
@@ -526,7 +569,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 				
 //		needleColor.add(Color.GREEN);
 		
-		resultOrientationList.add(mainView.shapeEstimate(new Coordinate2D(topRightX, topRightY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()), new Coordinate2D(bottomLeftX, bottomLeftY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight())));
+		
 		
 		
 		
@@ -540,7 +583,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 
 //		needleColor.add(Color.GREEN);
 		
-		resultOrientationList.add(mainView.shapeEstimate(new Coordinate2D(leftX, leftY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()), new Coordinate2D(rightX, rightY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight())));
+		
 		
 		
 		int topX = centerX;
@@ -551,11 +594,44 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 				
 //		needleColor.add(Color.GREEN);
 		
-		resultOrientationList.add(mainView.shapeEstimate(new Coordinate2D(topX, topY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()), new Coordinate2D(bottomX, bottomY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight())));
 		
 		
 		
-		Orientation avgOrient = avgOrientation(resultOrientationList);
+		
+		Orientation result1 = mainView.shapeEstimate(new Coordinate2D(topLeftX, topLeftY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()), new Coordinate2D(bottomRightX, bottomRightY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()));
+		
+		Orientation result2 = mainView.shapeEstimate(new Coordinate2D(topRightX, topRightY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()), new Coordinate2D(bottomLeftX, bottomLeftY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()));
+		
+		Orientation result3 = mainView.shapeEstimate(new Coordinate2D(leftX, leftY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()), new Coordinate2D(rightX, rightY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()));
+				
+		Orientation result4 = mainView.shapeEstimate(new Coordinate2D(topX, topY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()), new Coordinate2D(bottomX, bottomY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight()));
+		
+		
+		
+		resultOrientationList.add(result1);
+		
+		resultOrientationList.add(result2);
+		
+		resultOrientationList.add(result3);
+		
+		resultOrientationList.add(result4);
+		
+		
+		
+		Orientation avgOrient = avgOrientation(resultOrientationList, null);
+		
+//		System.out.println("BeforeWeight: slant = " + avgOrient.getSlantD() + ", tilt = " + avgOrient.getTiltD());
+//		
+//		LinkedList<Double> weightList = new LinkedList<Double>();
+//		
+//		weightList.add(directionWeight(1, avgOrient.getTiltD()));
+//		weightList.add(directionWeight(2, avgOrient.getTiltD()));
+//		weightList.add(directionWeight(3, avgOrient.getTiltD()));
+//		weightList.add(directionWeight(4, avgOrient.getTiltD()));
+//		
+//		
+//		Orientation weightedAvgOrient = avgOrientation(resultOrientationList, weightList);
+		
 		
 		System.out.println("Single Avg: slant = " + avgOrient.getSlantD() + ", tilt = " + avgOrient.getTiltD());
 		
@@ -573,7 +649,39 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 
 	
 	
-	
+	private double directionWeight(int direction, double tiltD){
+		
+		double degreeDiff;
+		
+		if(direction == 1){
+			
+			degreeDiff = Math.min(Math.abs(-45.0 - tiltD), Math.abs(135.0 - tiltD));
+			
+		}
+		else if(direction == 2){
+			
+			degreeDiff = Math.min(Math.abs(45.0 - tiltD), Math.abs(-135.0 - tiltD));
+		}
+		else if(direction == 3){
+			
+			degreeDiff = Math.min(Math.abs(tiltD), Math.abs(180.0 - tiltD));
+		}
+		else if(direction == 4){
+			
+			degreeDiff = Math.min(Math.abs(90.0 - tiltD), Math.abs(-90.0 - tiltD));
+		}
+		else
+			return 0;
+		
+		if(degreeDiff > 90.0)
+			degreeDiff = 180.0 - degreeDiff;
+		
+		double weight = (Math.abs(degreeDiff - 45.0) / 45.0); 
+		
+//		System.out.println("weight:" + weight);
+		
+		return weight;
+	}
 	
 	
 	
@@ -587,18 +695,20 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
         
         drawNeedle(g);
         
-//        drawGrid(g);
+        drawGrid(g);
 	}
 	
 	
-	/*
+	
 	private void drawGrid(Graphics g){
 		
-		if(gridSelected){
+		if(centerPicked){
 			
 			
 			g.setColor(POINT_COLOR);
-        	
+
+			((Graphics2D)g).setStroke(new BasicStroke(2.0f));
+			
         	g.drawRect(centerCoord.getX() - 1, centerCoord.getY() - 1, 2, 2);
         	
         	g.drawRect(centerCoord.getX() - GRID_GAP - 1, centerCoord.getY() - 1, 2, 2);
@@ -620,7 +730,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 		}
 		
 	}
-	*/
+	
 	
 	
 
@@ -629,7 +739,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 		if(!centerPicked)
 			return;
 		
-		((Graphics2D)g).setStroke(new BasicStroke(7.0f));
+		((Graphics2D)g).setStroke(new BasicStroke(5.0f));
 		
 		
 		for(int i = 0; i < estimatedOrientations.size(); i++){
@@ -654,9 +764,9 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 			
 			g.drawLine(x1, y1, x2, y2);
 			
-			g.setColor(Color.GREEN);
-			
-			g.drawLine(x1, y1, x1, y1);
+//			g.setColor(Color.GREEN);
+//			
+//			g.drawLine(x1, y1, x1, y1);
 			
 			
 			
@@ -710,22 +820,45 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 	
 	
 	
-	private Orientation avgOrientation(List<Orientation> orientationList){
+	private Orientation avgOrientation(List<Orientation> orientationList, List<Double> weightList){
 		
 		double sumSlantD = 0.0;
 		double sumTiltD = 0.0;
 		
 		Iterator<Orientation> iter = orientationList.iterator();
 		
-		while(iter.hasNext()){
-			Orientation currentOrient = iter.next();
+		if(weightList == null){
+		
+			while(iter.hasNext()){
+				Orientation currentOrient = iter.next();
+				
+				sumSlantD += currentOrient.getSlantD();
+				sumTiltD += currentOrient.getTiltD();
+			}
 			
-			sumSlantD += currentOrient.getSlantD();
-			sumTiltD += currentOrient.getTiltD();
+			return Orientation.orientationInDegree(sumSlantD / orientationList.size(), sumTiltD / orientationList.size());
 		}
-		
-		return Orientation.orientationInDegree(sumSlantD / orientationList.size(), sumTiltD / orientationList.size());
-		
+		else{
+			
+			Iterator<Double> weightIter = weightList.iterator();
+			double weightSum = 0.0;
+			
+			while(iter.hasNext()){
+				Orientation currentOrient = iter.next();
+				double weight  = weightIter.next();
+				
+				
+				sumSlantD += weight * currentOrient.getSlantD();
+				sumTiltD += weight * currentOrient.getTiltD();
+				
+				weightSum += weight;
+			}
+			
+			return Orientation.orientationInDegree(sumSlantD / weightSum, sumTiltD / weightSum);
+			
+			
+			
+		}
 //		
 //		double rawSlantD = sumSlantD / orientationList.size();
 //		double rawTiltD = sumTiltD / orientationList.size();

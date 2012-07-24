@@ -35,7 +35,7 @@ public class ResponseDiff {
 			
 			double responseInter = InterpolationUtil.gaussInterpolation(thetaA, orientations, responseA);
 			
-			double coef = phi.determinate() ;
+			double coef = phi.determinate();
 //			System.out.println(coef);
 			
 			double responseB_recovered = coef * responseInter;

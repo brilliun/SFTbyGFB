@@ -28,6 +28,7 @@ public class DistortionMatrix {
 		this.pointA = pointA;
 		this.pointB = pointB;
 		
+		
 		this.focal = computeFocal(viewAngleD, dimension);
 		
 		constructDistortionMatrix();
