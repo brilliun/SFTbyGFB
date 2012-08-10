@@ -45,8 +45,10 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 //	
 //	private int height;
 	
+	private static boolean renderToFile = false;
 	
-	private static final int NEEDLE_LENGTH = 100;
+	
+	private static final int NEEDLE_LENGTH = 200;
 	
 	private static final int GRID_GAP = 16;
 	
@@ -96,6 +98,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 	
 	
 	public SrcImgPanel(){
+		
 		
 	}
 
@@ -158,6 +161,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 		}
 		*/
 				
+		
 		if(e.getKeyChar() == 'r'){ // estimate the orientation by any two patches selected
 		
 			if(leftPicked && rightPicked){
@@ -167,7 +171,6 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 				this.repaint();
 			}
 		}
-		
 		
 		else if(e.getKeyChar() == 'd'){ // estimate the orientation by two pairs of diagonal patches around a center point
 			
@@ -333,8 +336,13 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 			
 			centerCoord.setCoordinate(centerX, centerY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight());
 			
+			long startTime = System.currentTimeMillis();
 			
 			Orientation orientation = mainView.shapeEstimate(formerCoord, latterCoord);
+			
+			long endTime = System.currentTimeMillis();
+			
+			System.out.println((endTime - startTime) / 1000);
 			
 			estimatedOrientations.add(orientation);
 			
@@ -687,6 +695,7 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 	
 	
 	protected void paintComponent(Graphics g) {
+		
 		
 		g.drawImage(mainView.getSrcImg().getBufferedImg(), 0, 0, this);
         
