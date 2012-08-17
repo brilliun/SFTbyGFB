@@ -138,6 +138,15 @@ public class MainView implements IMyView {
 		return controller.triggerShapeEstimation(coordA, coordB);
 		
 	}
+
+
+	@Override
+	public Orientation shapeEstimate_FFT(Coordinate2D coordA,
+			Coordinate2D coordB) {
+		// TODO Auto-generated method stub
+		return controller.triggerShapeEstimation_FFT(coordA, coordB);
+		
+	}
 	
 //	public Orientation shapeEstimateEnergy(Coordinate2D coordA, Coordinate2D coordB) {
 //		

@@ -171,6 +171,15 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 				this.repaint();
 			}
 		}
+		else if(e.getKeyChar() == 't'){ // estimate the orientation by any two patches selected
+		
+			if(leftPicked && rightPicked){
+			
+				estimateByFormerLatterFFT();
+				
+				this.repaint();
+			}
+		}
 		
 		else if(e.getKeyChar() == 'd'){ // estimate the orientation by two pairs of diagonal patches around a center point
 			
@@ -336,13 +345,13 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 			
 			centerCoord.setCoordinate(centerX, centerY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight());
 			
-			long startTime = System.currentTimeMillis();
+			
 			
 			Orientation orientation = mainView.shapeEstimate(formerCoord, latterCoord);
 			
-			long endTime = System.currentTimeMillis();
 			
-			System.out.println((endTime - startTime) / 1000);
+			
+			
 			
 			estimatedOrientations.add(orientation);
 			
@@ -353,6 +362,34 @@ public class SrcImgPanel extends JPanel implements MouseListener, KeyListener{
 			
 	}
 	
+	private void estimateByFormerLatterFFT(){
+		
+		
+		
+		centerPicked = true;
+		needleColor.add(Color.GREEN);
+		
+		int centerX = (formerCoord.getX() + latterCoord.getX())/2;
+		int centerY = (formerCoord.getY() + latterCoord.getY())/2;
+		
+		centerCoord.setCoordinate(centerX, centerY, mainView.getSrcImgWidth(), mainView.getSrcImgHeight());
+		
+		
+		
+		Orientation orientation = mainView.shapeEstimate_FFT(formerCoord, latterCoord);
+		
+		
+		
+		
+		
+		estimatedOrientations.add(orientation);
+		
+		estimatedPositions.add(new Coordinate2D(centerX, centerY));
+		
+		needleColor.add(Color.GREEN);
+		
+		
+}
 	
 	private void estimateByCenterDiagonal(){
 		

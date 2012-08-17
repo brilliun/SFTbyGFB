@@ -1,11 +1,13 @@
 package model;
 
+import imgUtil.ImgCommonUtil;
 import imgUtil.Spectrum;
 
 import java.awt.image.BufferedImage;
 
 import mathUtil.Coordinate2D;
 import sft.ShapeEstimation;
+import sft.ShapeEstimation_FFT;
 import controller.IMyController;
 
 public class SFTModel implements ISFTModel{
@@ -23,6 +25,8 @@ public class SFTModel implements ISFTModel{
 	private IMyController controller;
 	
 	private ShapeEstimation shapeEstimation;
+	
+	private ShapeEstimation_FFT shapeEstimation_FFT;
 	
 	
 	
@@ -54,7 +58,7 @@ public class SFTModel implements ISFTModel{
 	public void init() {
 		
 		this.shapeEstimation = new ShapeEstimation(viewAngleD, dimension);
-		
+		this.shapeEstimation_FFT = new ShapeEstimation_FFT(viewAngleD, dimension);
 	}
 	
 	
@@ -79,6 +83,29 @@ public class SFTModel implements ISFTModel{
 		
 		System.out.println(estimatedOrientation.toString());
 		
+		
+		return estimatedOrientation;
+	}
+	
+	
+	public Orientation doShapeEstimationFFT(SrcImage srcImg, Coordinate2D pointA, Coordinate2D pointB){
+		
+		BufferedImage subImageA = ImgCommonUtil.getSubImage(pointA.getX() - patchWidth/2, pointA.getY() - patchHeight/2, patchWidth, patchHeight, srcImg.getBufferedImg());
+		
+		BufferedImage subImageB = ImgCommonUtil.getSubImage(pointB.getX() - patchWidth/2, pointB.getY() - patchHeight/2, patchWidth, patchHeight, srcImg.getBufferedImg());
+		
+		
+		Spectrum spectrumA = ImgCommonUtil.FFT2D(subImageA, false);
+		
+		Spectrum spectrumB = ImgCommonUtil.FFT2D(subImageB, false);
+		
+		
+		System.out.println("Shape Estimation FFT start");
+		
+		Orientation estimatedOrientation = shapeEstimation_FFT.estimateShape(spectrumA, spectrumB, pointA.shiftedCoord(), pointB.shiftedCoord());
+		
+		
+		System.out.println(estimatedOrientation.toString());
 		
 		return estimatedOrientation;
 	}

@@ -26,7 +26,7 @@ public class MainController implements IMyController {
 
 	private void initModel(){
 		
-		this.srcImg = new SrcImage("test/plane/2_s45t300.bmp");
+		this.srcImg = new SrcImage("test/plane/12_s5t60.bmp");
 		
 		
 		filterBankModel.init();
@@ -53,7 +53,15 @@ public class MainController implements IMyController {
 		
 	}
 	
-	
+
+	@Override
+	public Orientation triggerShapeEstimation_FFT(Coordinate2D coordA,
+			Coordinate2D coordB) {
+		// TODO Auto-generated method stub
+		
+		return sftModel.doShapeEstimationFFT(srcImg, coordA, coordB);
+	}
+
 	
 //	public Orientation triggerShapeEstimationEnergy(Coordinate2D coordA, Coordinate2D coordB) {
 //		
@@ -152,6 +160,8 @@ public class MainController implements IMyController {
 		// TODO Auto-generated method stub
 		return sftModel.getPatchHeight();
 	}
+
+
 
 
 

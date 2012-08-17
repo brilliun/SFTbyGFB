@@ -148,8 +148,12 @@ public class Spectrum {
 	
 	public Complex getPointData(int x, int y){
 		
+		if(x < 0 || y < 0 || x >= dimX || y >= dimY)
+			return new Complex();
+				
 		if(data[x][y] == null)
 			return data[x][y] = new Complex();
+		
 		
 		return data[x][y];
 	}

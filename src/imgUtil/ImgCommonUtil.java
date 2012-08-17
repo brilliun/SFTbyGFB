@@ -16,6 +16,34 @@ public class ImgCommonUtil {
 	
 	private static final int GRAY = 1;
 	private static final int RGB = 3;
+	
+	
+	
+	public static void main(String[] args){
+		
+		BufferedImage srcImg = readImageFile("test.bmp");
+		
+		writeToImgFile("subImg", "png", ImgCommonUtil.getSubImage(368, 430, 64, 64, srcImg));
+		
+		
+	}
+	
+	
+	public static BufferedImage readImageFile(String filename){
+		
+		BufferedImage srcImg = null;
+
+		try {
+			srcImg = ImageIO.read(new File(filename));
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+		}
+		
+		return srcImg;
+	}
 
 
 	public static double[][][] readImageData(BufferedImage img){
@@ -95,6 +123,31 @@ public class ImgCommonUtil {
 	}
 	
 	
+	
+	public static BufferedImage getSubImage(int startX, int startY, int width, int height, BufferedImage entireImg){
+		
+		
+		BufferedImage subImg = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+		
+		WritableRaster raster = subImg.getRaster();
+		
+		
+		double[][] entirePixel = readGrayscaleImageData(entireImg);
+		
+		
+		for(int x = 0; x < width; x++){
+			for(int y = 0; y < height; y++){
+				
+				double[] pixel = {entirePixel[startX + x][startY + y]};
+				
+				raster.setPixel(x, y, pixel);
+			}
+		}
+		
+		return subImg;
+	}
+	
+	
 	public static BufferedImage writeToImage(int width, int height, double[][] data){
 		
 		BufferedImage resultImg = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
@@ -118,6 +171,19 @@ public class ImgCommonUtil {
 		resultImg.setData(raster);
 		
 		return resultImg;
+	}
+	
+	
+	public static void writeToImgFile(String filename, String format, BufferedImage img){
+		
+
+		try {
+			   
+		    File outputfile = new File(filename + "." + format);
+		    ImageIO.write(img, format, outputfile);
+		} catch (IOException e) {
+		    
+		}
 	}
 	
 	
