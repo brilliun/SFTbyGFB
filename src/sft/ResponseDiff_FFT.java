@@ -13,6 +13,12 @@ public class ResponseDiff_FFT {
 		int width = spectrumA.getDimX();
 		int height = spectrumA.getDimY();
 		
+		int halfWidth = width/2;
+		int halfHeight = height/2;
+		
+		double gap = 1.0 / width;
+		double halfGap = 1.0 / (2 * width);
+		
 		double phi_11 = Phi.get(1, 1);
 		double phi_12 = Phi.get(1, 2);
 		double phi_21 = Phi.get(2, 1);
@@ -21,19 +27,51 @@ public class ResponseDiff_FFT {
 		
 		double totalDiff = 0.0;
 		
-		for(int u = 0; u < width; u++){
-			for(int v = 0; v < height; v++){
+		for(int m = 0; m < width; m++){
+			for(int n = 0; n < height; n++){
 				
-				int u_shift = (int) Math.round(phi_11 * u + phi_12 * v);
-				int v_shift = (int) Math.round(phi_21 * u + phi_22 * v);
 				
-				double responseB = spectrumB.getPointData(u, v).getAmplitude() ;
-				double responseA = spectrumA.getPointData(u_shift, v_shift).getAmplitude();
+				double u = (m+1 - halfWidth)/width - halfGap;
+				double v = -((n+1 - halfHeight)/height - halfGap);
 				
-				if(responseB != 0)
-					totalDiff += Math.abs(responseB - responseA) / responseB;
-				else if(responseA != 0)
-					totalDiff += Math.abs(responseB - responseA) / responseA;
+				double u_shift = phi_11 * u + phi_12 * v;
+				double v_shift = phi_21 * u + phi_22 * v;
+				
+				int posU, posV;
+				
+				if(u_shift > 0){
+					
+					posU = (int) Math.floor(u_shift / gap) + halfWidth;
+					
+				}
+				else{
+					posU = (int)Math.ceil(u_shift / gap) + halfWidth - 1;
+					
+				}
+				
+				if(v_shift > 0){
+					
+					posV = halfHeight - (int) Math.floor(v_shift / gap) - 1;
+					
+				}
+				else{
+					posV = halfHeight - (int) Math.floor(v_shift / gap);
+					
+				}
+				
+				
+				
+				
+				
+				double responseB = spectrumB.getPointData(m, n).getAmplitude() ;
+				
+				if(posU < 0 || posV< 0 || posU>= width || posV>= height){
+					totalDiff += responseB;
+					continue;
+				}
+				double responseA = Phi.determinate() * spectrumA.getPointData(posU, posV).getAmplitude();
+				
+				totalDiff += Math.abs(responseB - responseA);
 				
 			}
 		}

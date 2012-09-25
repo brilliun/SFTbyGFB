@@ -27,6 +27,84 @@ public class ShapeEstimation_FFT {
 		
 	}
 	
+	public Orientation coarseToFineEstimate(Spectrum spectrumA, Spectrum spectrumB, Coordinate2D pointA, Coordinate2D pointB){
+		
+		double[] slantGap = {5.0, 1.0, 0.1};
+		
+		double[] tiltGap = {10.0, 2.0, 0.5};
+		
+		int iterationRounds = 3;
+		
+		
+		double slantStart = SLANT_MIN;
+		double slantEnd = SLANT_MAX;
+		
+		double tiltStart = TILT_MIN;
+		double tiltEnd = TILT_MAX;
+		
+		Orientation tempResult = null;
+		
+		
+		for(int iteration = 0; iteration < iterationRounds; iteration++){
+			
+			tempResult = findMinDiff(slantStart, slantEnd, slantGap[iteration], tiltStart, tiltEnd, tiltGap[iteration], spectrumA, spectrumB, pointA, pointB);
+			
+			slantStart = tempResult.getSlantD() - slantGap[iteration];
+			slantEnd = tempResult.getSlantD() + slantGap[iteration];
+			
+			tiltStart = tempResult.getTiltD() - tiltGap[iteration];
+			tiltEnd = tempResult.getTiltD() + tiltGap[iteration];
+			
+			slantStart = slantStart < SLANT_MIN ? SLANT_MIN: slantStart;
+			slantEnd = slantEnd > SLANT_MAX ? SLANT_MAX : slantEnd;
+			
+			tiltStart = tiltStart < TILT_MIN ? TILT_MIN : tiltStart;
+			tiltEnd = tiltEnd > TILT_MAX ? TILT_MAX : tiltEnd;
+			
+			
+		}
+		
+		if(tempResult.getTiltD() >= 180.0)
+			tempResult = Orientation.orientationInDegree(tempResult.getSlantD(), tempResult.getTiltD()-360.0);
+			
+		
+		return tempResult;
+		
+	}
+	
+	
+	private Orientation findMinDiff(double slantStart, double slantEnd, double slantGap, double tiltStart, double tiltEnd, double tiltGap, Spectrum spectrumA, Spectrum spectrumB, Coordinate2D pointA, Coordinate2D pointB){
+		
+		double minDiff = Double.MAX_VALUE;
+		
+		double slantEstimated = 0.0;
+		double tiltEstimated = 0.0;
+		
+		for(double slant = slantStart; slant < slantEnd; slant += slantGap){
+			
+			for(double tilt = tiltStart; tilt < tiltEnd; tilt += tiltGap){
+				
+				DistortionMatrix phi = new DistortionMatrix(viewAngleD, dimension, toRadians(slant), toRadians(tilt), pointA, pointB);
+				
+				double diff = ResponseDiff_FFT.computeResponseDiff(phi, spectrumA, spectrumB);
+				
+				if(diff < minDiff){
+					
+					slantEstimated = slant;
+					tiltEstimated = tilt;
+					
+					minDiff = diff;
+				}
+				
+			}
+		}
+		
+		System.out.println(minDiff);
+		
+		return Orientation.orientationInDegree(slantEstimated, tiltEstimated);
+	}
+	
+	
 	public Orientation estimateShape(Spectrum spectrumA, Spectrum spectrumB, Coordinate2D pointA, Coordinate2D pointB){
 		
 		

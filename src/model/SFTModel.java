@@ -17,9 +17,9 @@ public class SFTModel implements ISFTModel{
 	
 	private int dimension;
 	
-	private static int patchWidth = 32;
+	private static int patchWidth = 64;
 	
-	private static int patchHeight = 32;
+	private static int patchHeight = 64;
 	
 	
 	private IMyController controller;
@@ -102,7 +102,7 @@ public class SFTModel implements ISFTModel{
 		
 		System.out.println("Shape Estimation FFT start");
 		
-		Orientation estimatedOrientation = shapeEstimation_FFT.estimateShape(spectrumA, spectrumB, pointA.shiftedCoord(), pointB.shiftedCoord());
+		Orientation estimatedOrientation = shapeEstimation_FFT.coarseToFineEstimate(spectrumA, spectrumB, pointA.shiftedCoord(), pointB.shiftedCoord());
 		
 		
 		System.out.println(estimatedOrientation.toString());

@@ -26,7 +26,7 @@ public class MainController implements IMyController {
 
 	private void initModel(){
 		
-		this.srcImg = new SrcImage("test/plane/12_s5t60.bmp");
+		this.srcImg = new SrcImage("test/plane/17_s65t240.bmp");
 		
 		
 		filterBankModel.init();
